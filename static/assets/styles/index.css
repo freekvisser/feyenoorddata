@@ -1,5 +1,9 @@
 @font-face {
     src: url("../fonts/ampero/otf/Ampero-LightItalic.otf");
+    font-family: Ampero_it;
+}
+@font-face {
+    src: url("../fonts/ampero/otf/Ampero-Light.otf");
     font-family: Ampero;
 }
 
@@ -21,6 +25,7 @@ body{
     align-items: center;
     align-content: center;
     margin: 0 auto;
+    font-family: Ampero_it;
 }
 
 .header-element{
@@ -65,4 +70,10 @@ body{
 
     background: linear-gradient(180deg, rgba(0,0,0,0.0), rgba(255, 0, 0, 0.4));
     backdrop-filter: blur(2px);
+}
+
+p{
+    width: 50%;
+    margin: auto;
+    text-align: center;
 }
