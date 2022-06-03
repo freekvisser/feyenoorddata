@@ -5,12 +5,13 @@
     </head>
     <body>
         <div id="header">
-            <div class="header-element" id="matches">
-                <span>Latest match</span>
-            </div>
-            <div class="header-element" id="players">
+            <a class="header-element" id="matches" href="{{ url_for('competitions') }}">
+
+                <span>Competitions</span>
+            </a>
+            <a class="header-element" id="players" href="#">
                 <span>Player performance</span>
-            </div>
+            </a>
         </div>
         <p>
             The open source project <strong>feyenoorddata</strong> was made to gather and display all sorts of data about this club.
