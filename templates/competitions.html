@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <body>
+    <table>
+        <tr>
+        {% for key in competitions[0] %}
+            <th>
+                {{key}}
+            </th>
+        {% endfor %}
+        </tr>
+        {% for competition in competitions %}
+            <tr id="{{competition['competition_id']}}-{{competition['season_id']}}" onclick="navigate(`{{ url_for('match', competition=competition['competition_id'], season=competition['season_id']) }}`)">
+            {% for key, value in competition.items() %}
+                <td>{{value}}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
+    <script>
+        function navigate(href){
+            location.assign(href);
+        }
+    </script>
+    <a href="">Matches</a>
+
+
+
+    </body>
+</html>
