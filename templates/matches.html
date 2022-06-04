@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static',filename='assets/styles/index.css') }}" type="text/css">
+</head>
+
+<body>
+    <table>
+        <tr>
+        {% for key in matches[0] %}
+            <th>
+                {{key}}
+            </th>
+        {% endfor %}
+        </tr>
+        {% for competition in matches %}
+            <tr onclick="navigate(`{{ url_for('match', match=competition['match_id'])}}`)">
+                {% for key, value in competition.items() %}
+                <td>{{value}}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    <script>
+            function navigate(href){
+                location.assign(href);
+            }
+        </script>
+</body>
+</html>

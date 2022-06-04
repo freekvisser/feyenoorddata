@@ -77,3 +77,22 @@ p{
     margin: auto;
     text-align: center;
 }
+
+table{
+    border-collapse: collapse;
+    padding: 10%;
+}
+table tr{
+    cursor: pointer;
+}
+table tr:first-child{
+    cursor: auto;
+}
+
+table tr:not(:first-child):hover{
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    color: #fff;
+}
+table tr:nth-child(odd){
+    background-color: rgba(0, 0, 0, 0.1);
+}
