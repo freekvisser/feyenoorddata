@@ -179,6 +179,7 @@ class Match:
         pitch.annotate(number, positions[position],
                        color='white',
                        bbox=dict(fc=kit_color, alpha=0.5, boxstyle='circle', pad=padding),
+                       ha='center',
                        fontsize=font_size, ax=ax)
 
     def drawFormation(self, pitch, ax):
