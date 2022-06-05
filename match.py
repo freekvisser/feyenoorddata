@@ -15,7 +15,7 @@ PITCH_LENGTH = 105
 PITCH_WIDTH = 69
 
 pitch_corrections = {
-            'x': 2,
+            'x': 1.85,
             'y': 3
         }
 
@@ -58,6 +58,20 @@ CORRIDORS = {
 
 CENTER = 33
 
+POSITION_CODES = {
+    'Goalkeeper': 'gk',
+    'Right Back': 'rb',
+    'Left Back': 'lb',
+    'Right Center Back': 'rcb',
+    'Left Center Back': 'lcb',
+    'Right Defensive Midfield': 'rdm',
+    'Left Defensive Midfield': 'ldm',
+    'Right Midfield': 'rm',
+    'Left Midfield': 'lm',
+    'Right Center Forward': 'rcf',
+    'Left Center Forward': 'lcf',
+}
+
 class Match:
     def getData(self, match_id):
         global data
@@ -91,10 +105,12 @@ class Match:
                            }
 
         home_positions = {
+            'gk': (3, CENTER),
+
             'rb': (LINE_HEIGHTS['full-back']['home'], CORRIDORS['outer']),
             'lb': (LINE_HEIGHTS['full-back']['home'], PITCH_WIDTH - CORRIDORS['outer'] - pitch_corrections['y']),
-            'rcv': (LINE_HEIGHTS['defense']['home'], CORRIDORS['central']),
-            'lcv': (LINE_HEIGHTS['defense']['home'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
+            'rcb': (LINE_HEIGHTS['defense']['home'], CORRIDORS['central']),
+            'lcb': (LINE_HEIGHTS['defense']['home'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
 
             'rdm': (LINE_HEIGHTS['defensive_midfield']['home'], CORRIDORS['central']),
             'ldm': (LINE_HEIGHTS['defensive_midfield']['home'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
@@ -118,10 +134,12 @@ class Match:
             'st': (LINE_HEIGHTS['attack']['home'], CENTER),
         }
         away_positions = {
+            'gk': (PITCH_LENGTH - 3 - pitch_corrections['x'], CENTER),
+
             'lb': (LINE_HEIGHTS['full-back']['away'], CORRIDORS['outer']),
             'rb': (LINE_HEIGHTS['full-back']['away'], PITCH_WIDTH - CORRIDORS['outer'] - pitch_corrections['y']),
-            'lcv': (LINE_HEIGHTS['defense']['away'], CORRIDORS['central']),
-            'rcv': (LINE_HEIGHTS['defense']['away'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
+            'lcb': (LINE_HEIGHTS['defense']['away'], CORRIDORS['central']),
+            'rcb': (LINE_HEIGHTS['defense']['away'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
 
             'ldm': (LINE_HEIGHTS['defensive_midfield']['away'], CORRIDORS['central']),
             'rdm': (LINE_HEIGHTS['defensive_midfield']['away'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
@@ -143,8 +161,6 @@ class Match:
             'rw': (LINE_HEIGHTS['wing']['away'], PITCH_WIDTH - CORRIDORS['outer'] - pitch_corrections['y']),
 
             'st': (LINE_HEIGHTS['attack']['away'], CENTER),
-
-
         }
 
         kit_color = 'blue' if home == True else 'red'
@@ -162,25 +178,42 @@ class Match:
 
     def drawFormation(self, pitch, ax):
 
+        global data
+        index = 0
+
+        for team in data:
+            for player in team['lineup']:
+                jersey_number = player['jersey_number']
+                position = POSITION_CODES[player['position']['name']]
+                home = True if index == 0 else False
+
+
+                self.draw_player(jersey_number, position, home, pitch, ax)
+
+            index = index + 1
+
+
         formations = [data[0]['formation'], data[1]['formation']]
 
         formationSwitch = {442: self.draw442,
                    }
-
+        """
+        self.draw_player(1, 'gk', True, pitch, ax)
         self.draw_player(2, 'rb', True, pitch, ax)
-        self.draw_player(4, 'rcv', True, pitch, ax)
-        self.draw_player(5, 'lcv', True, pitch, ax)
+        self.draw_player(4, 'rcb', True, pitch, ax)
+        self.draw_player(5, 'lcb', True, pitch, ax)
         self.draw_player(3, 'lb', True, pitch, ax)
-        self.draw_player(6, 'rcm', True, pitch, ax)
-        self.draw_player(8, 'lcm', True, pitch, ax)
-        self.draw_player(10, 'cam', True, pitch, ax)
-        self.draw_player(11, 'lw', True, pitch, ax)
-        self.draw_player(7, 'rw', True, pitch, ax)
-        self.draw_player(9, 'st', True, pitch, ax)
+        self.draw_player(6, 'rdm', True, pitch, ax)
+        self.draw_player(8, 'ldm', True, pitch, ax)
+        self.draw_player(10, 'rm', True, pitch, ax)
+        self.draw_player(11, 'lm', True, pitch, ax)
+        self.draw_player(7, 'rcf', True, pitch, ax)
+        self.draw_player(9, 'lcf', True, pitch, ax)
 
+        self.draw_player(1, 'gk', False, pitch, ax)
         self.draw_player(2, 'rb', False, pitch, ax)
-        self.draw_player(4, 'rcv', False, pitch, ax)
-        self.draw_player(5, 'lcv', False, pitch, ax)
+        self.draw_player(4, 'rcb', False, pitch, ax)
+        self.draw_player(5, 'lcb', False, pitch, ax)
         self.draw_player(3, 'lb', False, pitch, ax)
         self.draw_player(6, 'rcm', False, pitch, ax)
         self.draw_player(8, 'lcm', False, pitch, ax)
@@ -188,4 +221,5 @@ class Match:
         self.draw_player(11, 'lw', False, pitch, ax)
         self.draw_player(7, 'rw', False, pitch, ax)
         self.draw_player(9, 'st', False, pitch, ax)
+        """
 
