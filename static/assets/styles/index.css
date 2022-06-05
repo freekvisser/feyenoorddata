@@ -84,6 +84,7 @@ table{
 }
 table tr{
     cursor: pointer;
+    transition: .1s;
 }
 table tr:first-child{
     cursor: auto;
@@ -95,4 +96,32 @@ table tr:not(:first-child):hover{
 }
 table tr:nth-child(odd){
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+
+#line-up-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+}
+#line-up-container .line-up-text{
+    width: 25%;
+    font-size: 25px;
+}
+#line-up-container .line-up-text td:hover{
+    cursor: default;
+}
+
+#line-up-container .line-up-text td:hover{
+   cursor: default;
+}
+#line-up-container #home{
+    text-align: end;
+}
+#line-up-container #home tr{
+    text-align: end;
+}
+#line-up-container img{
+    width: 50%;
 }

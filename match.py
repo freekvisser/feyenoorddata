@@ -15,7 +15,7 @@ PITCH_LENGTH = 105
 PITCH_WIDTH = 69
 
 pitch_corrections = {
-            'x': 1.85,
+            'x': 0,
             'y': 3
         }
 
@@ -46,7 +46,7 @@ LINE_HEIGHTS = {
     },
     'attack': {
         'home': 47,
-        'away': PITCH_LENGTH - 47 - pitch_corrections['x']
+        'away': PITCH_LENGTH - 47 - pitch_corrections['x'] - 3
     }
 }
 
@@ -65,11 +65,16 @@ POSITION_CODES = {
     'Right Center Back': 'rcb',
     'Left Center Back': 'lcb',
     'Right Defensive Midfield': 'rdm',
+    'Center Defensive Midfield': 'cdm',
     'Left Defensive Midfield': 'ldm',
+    'Right Center Midfield': 'rcm',
+    'Left Center Midfield': 'lcm',
+    'Center Midfield': 'cm',
     'Right Midfield': 'rm',
     'Left Midfield': 'lm',
     'Right Center Forward': 'rcf',
     'Left Center Forward': 'lcf',
+    'Center Forward': 'st',
 }
 
 class Match:
@@ -105,7 +110,7 @@ class Match:
                            }
 
         home_positions = {
-            'gk': (3, CENTER),
+            'gk': (0, CENTER),
 
             'rb': (LINE_HEIGHTS['full-back']['home'], CORRIDORS['outer']),
             'lb': (LINE_HEIGHTS['full-back']['home'], PITCH_WIDTH - CORRIDORS['outer'] - pitch_corrections['y']),
@@ -120,8 +125,8 @@ class Match:
             'lcm': (LINE_HEIGHTS['midfield']['home'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
             'cm': (LINE_HEIGHTS['midfield']['home'], CENTER),
 
-            'rm': (LINE_HEIGHTS['midfield']['home'], CORRIDORS['inner']),
-            'lm': (LINE_HEIGHTS['midfield']['home'], PITCH_WIDTH - CORRIDORS['inner'] - pitch_corrections['y']),
+            'rm': (LINE_HEIGHTS['attacking_midfield']['home'], CORRIDORS['inner']),
+            'lm': (LINE_HEIGHTS['attacking_midfield']['home'], PITCH_WIDTH - CORRIDORS['inner'] - pitch_corrections['y']),
 
             'cam': (LINE_HEIGHTS['attacking_midfield']['home'], CENTER),
 
@@ -134,7 +139,7 @@ class Match:
             'st': (LINE_HEIGHTS['attack']['home'], CENTER),
         }
         away_positions = {
-            'gk': (PITCH_LENGTH - 3 - pitch_corrections['x'], CENTER),
+            'gk': (PITCH_LENGTH - 0 - pitch_corrections['x'], CENTER),
 
             'lb': (LINE_HEIGHTS['full-back']['away'], CORRIDORS['outer']),
             'rb': (LINE_HEIGHTS['full-back']['away'], PITCH_WIDTH - CORRIDORS['outer'] - pitch_corrections['y']),
@@ -149,8 +154,8 @@ class Match:
             'rcm': (LINE_HEIGHTS['midfield']['away'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
             'cm': (LINE_HEIGHTS['midfield']['away'], CENTER),
 
-            'lm': (LINE_HEIGHTS['midfield']['away'], CORRIDORS['inner']),
-            'rm': (LINE_HEIGHTS['midfield']['away'], PITCH_WIDTH - CORRIDORS['inner'] - pitch_corrections['y']),
+            'lm': (LINE_HEIGHTS['attacking_midfield']['away'], CORRIDORS['inner']),
+            'rm': (LINE_HEIGHTS['attacking_midfield']['away'], PITCH_WIDTH - CORRIDORS['inner'] - pitch_corrections['y']),
 
             'cam': (LINE_HEIGHTS['attacking_midfield']['away'], CENTER),
 
@@ -186,6 +191,8 @@ class Match:
                 jersey_number = player['jersey_number']
                 position = POSITION_CODES[player['position']['name']]
                 home = True if index == 0 else False
+
+                print(player['player']['name'])
 
 
                 self.draw_player(jersey_number, position, home, pitch, ax)

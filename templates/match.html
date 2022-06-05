@@ -6,7 +6,7 @@
 </head>
 
 <body>
-
+<!--
         {% for team in matchData %}
             <table>
                 <tr>
@@ -24,6 +24,29 @@
             </table>
         <br><br>
         {% endfor %}
-        <img src='data:image/png;base64,{{plot}}'/>
+-->
+        <div id="line-up-container">
+            <table class="line-up-text" id="home">
+                    <tr>
+                        {% for player in matchData[0]['lineup'] %}
+                            <tr>
+                                <td>{{player['player']['name']}}</td>
+                                <td>{{player['jersey_number']}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tr>
+                </table>
+            <img src='data:image/png;base64,{{plot}}'/>
+                <table class="line-up-text" id="away">
+                    <tr>
+                        {% for player in matchData[1]['lineup'] %}
+                            <tr>
+                                <td>{{player['jersey_number']}}</td>
+                                <td>{{player['player']['name']}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tr>
+                </table>
+        </div>
 </body>
 </html>
