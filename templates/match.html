@@ -7,13 +7,13 @@
 
 <body>
 
-        {% for competition in pandas %}
+        {% for team in matchData %}
             <table>
                 <tr>
-                    <th>{{competition['formation']}}</th>
+                    <th>{{team['formation']}}</th>
                 </tr>
-            {% for lineUp in competition['lineup'] %}
-                <tr onclick="navigate(`{{ url_for('match', game=competition['formation'])}}`)">
+            {% for lineUp in team['lineup'] %}
+                <tr>
 
                     {% for key, value in lineUp.items() %}
                         <td>{{value}}</td>
@@ -24,13 +24,6 @@
             </table>
         <br><br>
         {% endfor %}
-
-
-
-    <script>
-            function navigate(href){
-                location.assign(href);
-            }
-        </script>
+        <img src='data:image/png;base64,{{plot}}'/>
 </body>
 </html>
