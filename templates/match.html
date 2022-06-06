@@ -26,27 +26,39 @@
         {% endfor %}
 -->
         <div id="line-up-container">
-            <table class="line-up-text" id="home">
+            <table class="line-up-text" id="home" cellspacing="0">
                     <tr>
                         {% for player in matchData[0]['lineup'] %}
-                            <tr>
-                                <td>{{player['player']['name']}}</td>
-                                <td>{{player['jersey_number']}}</td>
+                            <tr id={{loop.index}}>
+                                <td onmouseover="selectPosition({{loop.index}})" onmouseleave="deselectPosition({{loop.index}})">{{player['player']['name']}}</td>
+                                <td onmouseover="selectPosition({{loop.index}})" onmouseleave="deselectPosition({{loop.index}})">{{player['jersey_number']}}</td>
                             </tr>
                         {% endfor %}
                     </tr>
                 </table>
-            <img src='data:image/png;base64,{{plot}}'/>
+
+
+            {{plot}}
                 <table class="line-up-text" id="away">
                     <tr>
                         {% for player in matchData[1]['lineup'] %}
                             <tr>
-                                <td>{{player['jersey_number']}}</td>
-                                <td>{{player['player']['name']}}</td>
+                                <td onmouseover="selectPosition({{loop.index + 11}})" onmouseleave="deselectPosition({{loop.index + 11}})">{{player['jersey_number']}}</td>
+                                <td onmouseover="selectPosition({{loop.index + 11}})" onmouseleave="deselectPosition({{loop.index + 11}})">{{player['player']['name']}}</td>
                             </tr>
                         {% endfor %}
                     </tr>
                 </table>
         </div>
+
+<script>
+                function selectPosition(index){
+                   document.getElementById("text_" + index).firstElementChild.firstElementChild.classList.toggle('highlight');
+                }
+                function deselectPosition(index){
+                   document.getElementById("text_" + index).firstElementChild.firstElementChild.classList.toggle('highlight');
+                }
+            </script>
+
 </body>
 </html>

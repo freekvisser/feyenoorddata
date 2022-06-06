@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Markup
 import json
 import pandas as pd
 import base64
@@ -41,6 +41,7 @@ def match():
     match_data = m.getData(match_id)
     fig, ax = m.drawPitch()
     img_data = m.render_img(fig)
+
 
     return render_template('match.html', matchData=match_data.values, plot=img_data)
 

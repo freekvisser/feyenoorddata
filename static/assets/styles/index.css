@@ -125,3 +125,11 @@ table tr:nth-child(odd){
 #line-up-container img{
     width: 50%;
 }
+.highlight{
+    fill: #62b223 !important;
+    opacity: 1;
+    transition: .2s;
+}
+path{
+    transition: .2s;
+}

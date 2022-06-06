@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response, Markup
 import json
 import pandas as pd
 import base64
+import io
 from io import BytesIO
 from mplsoccer.pitch import Pitch
+from matplotlib.backends.backend_svg import FigureCanvasSVG
+
 
 
 STARTINGXI = {
@@ -22,7 +25,7 @@ PITCH_CORRECTIONS = {
 LINE_HEIGHTS = {
     'goalkeeper': {
         'home': 4,
-        'away': PITCH_LENGTH - 4
+        'away': PITCH_LENGTH - 4 - PITCH_CORRECTIONS['x']
     },
     'defense': {
         'home': 12,
@@ -115,7 +118,7 @@ class Match:
         return data
 
     def drawPitch(self):
-        pitch = Pitch(pitch_color='grass', line_color='white', stripe=True, pitch_type='uefa', pitch_length=PITCH_LENGTH,
+        pitch = Pitch(pitch_color='grass', line_color='white', stripe=True, pitch_type='uefa', goal_type='box', pitch_length=PITCH_LENGTH,
                       pitch_width=PITCH_WIDTH)
         fig, ax = pitch.draw()
 
@@ -124,9 +127,10 @@ class Match:
         return fig, ax
 
     def render_img(self, fig):
-        buf = BytesIO()
-        fig.savefig(buf, format="png")
-        return base64.b64encode(buf.getbuffer()).decode("ascii")
+        buf = io.StringIO()
+        fig.savefig(buf, format="svg")
+
+        return Markup(buf.getvalue())
 
     def getPosition(self, position, side):
         positions = {
