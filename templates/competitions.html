@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static',filename='assets/styles/index.css') }}" type="text/css">
+    </head>
     <body>
     <table>
         <tr>
@@ -10,7 +13,7 @@
         {% endfor %}
         </tr>
         {% for competition in competitions %}
-            <tr id="{{competition['competition_id']}}-{{competition['season_id']}}" onclick="navigate(`{{ url_for('match', competition=competition['competition_id'], season=competition['season_id']) }}`)">
+            <tr id="{{competition['competition_id']}}-{{competition['season_id']}}" onclick="navigate(`{{ url_for('matches', competition=competition['competition_id'], season=competition['season_id']) }}`)">
             {% for key, value in competition.items() %}
                 <td>{{value}}</td>
             {% endfor %}

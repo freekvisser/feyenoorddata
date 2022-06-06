@@ -1,5 +1,11 @@
 from flask import Flask, render_template, request
 import json
+import pandas as pd
+import base64
+from io import BytesIO
+from mplsoccer.pitch import Pitch
+from match import Match
+
 
 app = Flask(__name__)
 
@@ -19,13 +25,24 @@ def competitions():
     return render_template('competitions.html', competitions=data)
 
 
+@app.route('/matches')
+def matches():
+    competitionID = request.args.get('competition')
+    seasonID = request.args.get('season')
+    with open('data/matches/{0}/{1}.json'.format(competitionID, seasonID)) as json_file:
+        items = json.load(json_file)
+    return render_template('matches.html', matches=items)
+
 @app.route('/match')
 def match():
-    competition = request.args.get('competition')
-    season = request.args.get('season')
-    with open('data/matches/{0}/{1}.json'.format(competition, season)) as json_file:
-        games = json.load(json_file)
-    return render_template('match.html', games=games)
+    match_id = request.args.get('match')
+
+    m = Match()
+    match_data = m.getData(match_id)
+    fig, ax = m.drawPitch()
+    img_data = m.render_img(fig)
+
+    return render_template('match.html', matchData=match_data.values, plot=img_data)
 
 
 @app.route('/test')

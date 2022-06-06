@@ -1,6 +1,52 @@
 <!DOCTYPE html>
 <html>
-    <p>
-        {{ games }}
-    </p>
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static',filename='assets/styles/index.css') }}" type="text/css">
+</head>
+
+<body>
+<!--
+        {% for team in matchData %}
+            <table>
+                <tr>
+                    <th>{{team['formation']}}</th>
+                </tr>
+            {% for lineUp in team['lineup'] %}
+                <tr>
+
+                    {% for key, value in lineUp.items() %}
+                        <td>{{value}}</td>
+                    {% endfor %}
+
+                </tr>
+            {% endfor %}
+            </table>
+        <br><br>
+        {% endfor %}
+-->
+        <div id="line-up-container">
+            <table class="line-up-text" id="home">
+                    <tr>
+                        {% for player in matchData[0]['lineup'] %}
+                            <tr>
+                                <td>{{player['player']['name']}}</td>
+                                <td>{{player['jersey_number']}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tr>
+                </table>
+            <img src='data:image/png;base64,{{plot}}'/>
+                <table class="line-up-text" id="away">
+                    <tr>
+                        {% for player in matchData[1]['lineup'] %}
+                            <tr>
+                                <td>{{player['jersey_number']}}</td>
+                                <td>{{player['player']['name']}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tr>
+                </table>
+        </div>
+</body>
 </html>
