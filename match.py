@@ -14,46 +14,72 @@ STARTINGXI = {
 PITCH_LENGTH = 105
 PITCH_WIDTH = 69
 
-pitch_corrections = {
+PITCH_CORRECTIONS = {
             'x': 0,
             'y': 3
         }
 
 LINE_HEIGHTS = {
+    'goalkeeper': {
+        'home': 4,
+        'away': PITCH_LENGTH - 4
+    },
     'defense': {
         'home': 10,
-        'away': PITCH_LENGTH - 10 - pitch_corrections['x']
+        'away': PITCH_LENGTH - 10
     },
     'full-back': {
         'home': 15,
-        'away': PITCH_LENGTH - 15 - pitch_corrections['x']
+        'away': PITCH_LENGTH - 15
     },
     'defensive_midfield': {
         'home': 22,
-        'away': PITCH_LENGTH - 22 - pitch_corrections['x']
+        'away': PITCH_LENGTH - 22
     },
     'midfield': {
         'home': 29,
-        'away': PITCH_LENGTH - 29 - pitch_corrections['x']
+        'away': PITCH_LENGTH - 29
     },
     'attacking_midfield': {
         'home': 36,
-        'away': PITCH_LENGTH - 36 - pitch_corrections['x']
+        'away': PITCH_LENGTH - 36
     },
     'wing': {
         'home': 41,
-        'away': PITCH_LENGTH - 41 - pitch_corrections['x']
+        'away': PITCH_LENGTH - 41
     },
     'attack': {
         'home': 47,
-        'away': PITCH_LENGTH - 47 - pitch_corrections['x'] - 3
+        'away': PITCH_LENGTH - 47
     }
 }
 
+
 CORRIDORS = {
-    'outer': 8,
-    'inner': 16,
-    'central': 24
+    'home': {
+        'right': {
+            'outer': 8,
+            'inner': 16,
+            'central': 24,
+        },
+        'left': {
+            'outer': PITCH_WIDTH - 8 - PITCH_CORRECTIONS['y'],
+            'inner': PITCH_WIDTH - 16 - PITCH_CORRECTIONS['y'],
+            'central': PITCH_WIDTH - 24 - PITCH_CORRECTIONS['y']
+        }
+    },
+    'away': {
+        'right': {
+            'outer': PITCH_WIDTH - 8 - PITCH_CORRECTIONS['y'],
+            'inner': PITCH_WIDTH - 16 - PITCH_CORRECTIONS['y'],
+            'central': PITCH_WIDTH - 24 - PITCH_CORRECTIONS['y']
+        },
+        'left': {
+            'outer': 8,
+            'inner': 16,
+            'central': 24,
+        }
+    }
 }
 
 CENTER = 33
@@ -72,6 +98,9 @@ POSITION_CODES = {
     'Center Midfield': 'cm',
     'Right Midfield': 'rm',
     'Left Midfield': 'lm',
+    'Center Attacking Midfield': 'cam',
+    'Right Wing': 'rw',
+    'Left Wing': 'lw',
     'Right Center Forward': 'rcf',
     'Left Center Forward': 'lcf',
     'Center Forward': 'st',
@@ -98,87 +127,55 @@ class Match:
         fig.savefig(buf, format="png")
         return base64.b64encode(buf.getbuffer()).decode("ascii")
 
-    def draw442(self):
-        print(442)
+    def getPosition(self, position, side):
+        positions = {
+            'gk': (LINE_HEIGHTS['goalkeeper'][side], CENTER),
 
+            'rb': (LINE_HEIGHTS['full-back'][side], CORRIDORS[side]['right']['outer']),
+            'lb': (LINE_HEIGHTS['full-back'][side], CORRIDORS[side]['left']['outer']),
+            'rcb': (LINE_HEIGHTS['defense'][side], CORRIDORS[side]['right']['central']),
+            'lcb': (LINE_HEIGHTS['defense'][side], CORRIDORS[side]['left']['central']),
 
+            'rdm': (LINE_HEIGHTS['defensive_midfield'][side], CORRIDORS[side]['right']['central']),
+            'ldm': (LINE_HEIGHTS['defensive_midfield'][side], CORRIDORS[side]['left']['central']),
+            'cdm': (LINE_HEIGHTS['defensive_midfield'][side], CENTER),
+
+            'rcm': (LINE_HEIGHTS['midfield'][side], CORRIDORS[side]['right']['central']),
+            'lcm': (LINE_HEIGHTS['midfield'][side], CORRIDORS[side]['left']['central']),
+            'cm': (LINE_HEIGHTS['midfield'][side], CENTER),
+
+            'rm': (LINE_HEIGHTS['attacking_midfield'][side], CORRIDORS[side]['right']['inner']),
+            'lm': (LINE_HEIGHTS['attacking_midfield'][side], CORRIDORS[side]['left']['inner']),
+
+            'cam': (LINE_HEIGHTS['attacking_midfield'][side], CENTER),
+
+            'rcf': (LINE_HEIGHTS['attack'][side], CORRIDORS[side]['right']['central']),
+            'lcf': (LINE_HEIGHTS['attack'][side], CORRIDORS[side]['left']['central']),
+
+            'rw': (LINE_HEIGHTS['wing'][side], CORRIDORS[side]['right']['outer']),
+            'lw': (LINE_HEIGHTS['wing'][side], CORRIDORS[side]['left']['outer']),
+
+            'st': (LINE_HEIGHTS['attack'][side], CENTER),
+        }
+
+        return positions[position]
 
     def draw_player(self, number, position, home, pitch, ax):
-        formations = [data[0]['formation'], data[1]['formation']]
 
-        formationSwitch = {442: self.draw442,
-                           }
-
-        home_positions = {
-            'gk': (0, CENTER),
-
-            'rb': (LINE_HEIGHTS['full-back']['home'], CORRIDORS['outer']),
-            'lb': (LINE_HEIGHTS['full-back']['home'], PITCH_WIDTH - CORRIDORS['outer'] - pitch_corrections['y']),
-            'rcb': (LINE_HEIGHTS['defense']['home'], CORRIDORS['central']),
-            'lcb': (LINE_HEIGHTS['defense']['home'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
-
-            'rdm': (LINE_HEIGHTS['defensive_midfield']['home'], CORRIDORS['central']),
-            'ldm': (LINE_HEIGHTS['defensive_midfield']['home'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
-            'cdm': (LINE_HEIGHTS['defensive_midfield']['home'], CENTER),
-
-            'rcm': (LINE_HEIGHTS['midfield']['home'], CORRIDORS['central']),
-            'lcm': (LINE_HEIGHTS['midfield']['home'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
-            'cm': (LINE_HEIGHTS['midfield']['home'], CENTER),
-
-            'rm': (LINE_HEIGHTS['attacking_midfield']['home'], CORRIDORS['inner']),
-            'lm': (LINE_HEIGHTS['attacking_midfield']['home'], PITCH_WIDTH - CORRIDORS['inner'] - pitch_corrections['y']),
-
-            'cam': (LINE_HEIGHTS['attacking_midfield']['home'], CENTER),
-
-            'rcf': (LINE_HEIGHTS['attack']['home'], CORRIDORS['central']),
-            'lcf': (LINE_HEIGHTS['attack']['home'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
-
-            'rw': (LINE_HEIGHTS['wing']['home'], CORRIDORS['outer']),
-            'lw': (LINE_HEIGHTS['wing']['home'], PITCH_WIDTH - CORRIDORS['outer'] - pitch_corrections['y']),
-
-            'st': (LINE_HEIGHTS['attack']['home'], CENTER),
-        }
-        away_positions = {
-            'gk': (PITCH_LENGTH - 0 - pitch_corrections['x'], CENTER),
-
-            'lb': (LINE_HEIGHTS['full-back']['away'], CORRIDORS['outer']),
-            'rb': (LINE_HEIGHTS['full-back']['away'], PITCH_WIDTH - CORRIDORS['outer'] - pitch_corrections['y']),
-            'lcb': (LINE_HEIGHTS['defense']['away'], CORRIDORS['central']),
-            'rcb': (LINE_HEIGHTS['defense']['away'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
-
-            'ldm': (LINE_HEIGHTS['defensive_midfield']['away'], CORRIDORS['central']),
-            'rdm': (LINE_HEIGHTS['defensive_midfield']['away'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
-            'cdm': (LINE_HEIGHTS['defensive_midfield']['away'], CENTER),
-
-            'lcm': (LINE_HEIGHTS['midfield']['away'], CORRIDORS['central']),
-            'rcm': (LINE_HEIGHTS['midfield']['away'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
-            'cm': (LINE_HEIGHTS['midfield']['away'], CENTER),
-
-            'lm': (LINE_HEIGHTS['attacking_midfield']['away'], CORRIDORS['inner']),
-            'rm': (LINE_HEIGHTS['attacking_midfield']['away'], PITCH_WIDTH - CORRIDORS['inner'] - pitch_corrections['y']),
-
-            'cam': (LINE_HEIGHTS['attacking_midfield']['away'], CENTER),
-
-            'lcf': (LINE_HEIGHTS['attack']['away'], CORRIDORS['central']),
-            'rcf': (LINE_HEIGHTS['attack']['away'], PITCH_WIDTH - CORRIDORS['central'] - pitch_corrections['y']),
-
-            'lw': (LINE_HEIGHTS['wing']['away'], CORRIDORS['outer']),
-            'rw': (LINE_HEIGHTS['wing']['away'], PITCH_WIDTH - CORRIDORS['outer'] - pitch_corrections['y']),
-
-            'st': (LINE_HEIGHTS['attack']['away'], CENTER),
-        }
-
-        kit_color = 'blue' if home == True else 'red'
-
-        positions = home_positions if home == True else away_positions
+        if home:
+            kit_color = 'blue'
+            side = 'home'
+        else:
+            kit_color = 'red'
+            side = 'away'
 
         font_size = 12
 
         padding = 0.5 if number < 10 else 0.4
 
-        pitch.annotate(number, positions[position],
+        pitch.annotate(number, self.getPosition(position, side),
                        color='white',
-                       bbox=dict(fc=kit_color, alpha=0.5, boxstyle='circle', pad=padding),
+                       bbox=dict(fc=kit_color, alpha=0.7, boxstyle='circle', pad=padding),
                        ha='center',
                        fontsize=font_size, ax=ax)
 
@@ -193,18 +190,11 @@ class Match:
                 position = POSITION_CODES[player['position']['name']]
                 home = True if index == 0 else False
 
-                print(player['player']['name'])
-
 
                 self.draw_player(jersey_number, position, home, pitch, ax)
 
             index = index + 1
 
-
-        formations = [data[0]['formation'], data[1]['formation']]
-
-        formationSwitch = {442: self.draw442,
-                   }
         """
         self.draw_player(1, 'gk', True, pitch, ax)
         self.draw_player(2, 'rb', True, pitch, ax)
