@@ -25,8 +25,8 @@ LINE_HEIGHTS = {
         'away': PITCH_LENGTH - 4
     },
     'defense': {
-        'home': 10,
-        'away': PITCH_LENGTH - 10
+        'home': 12,
+        'away': PITCH_LENGTH - 12
     },
     'full-back': {
         'home': 15,
@@ -90,6 +90,7 @@ POSITION_CODES = {
     'Left Back': 'lb',
     'Right Center Back': 'rcb',
     'Left Center Back': 'lcb',
+    'Center Back': 'cb',
     'Right Defensive Midfield': 'rdm',
     'Center Defensive Midfield': 'cdm',
     'Left Defensive Midfield': 'ldm',
@@ -135,6 +136,7 @@ class Match:
             'lb': (LINE_HEIGHTS['full-back'][side], CORRIDORS[side]['left']['outer']),
             'rcb': (LINE_HEIGHTS['defense'][side], CORRIDORS[side]['right']['central']),
             'lcb': (LINE_HEIGHTS['defense'][side], CORRIDORS[side]['left']['central']),
+            'cb': (LINE_HEIGHTS['defense'][side], CENTER),
 
             'rdm': (LINE_HEIGHTS['defensive_midfield'][side], CORRIDORS[side]['right']['central']),
             'ldm': (LINE_HEIGHTS['defensive_midfield'][side], CORRIDORS[side]['left']['central']),
@@ -189,7 +191,6 @@ class Match:
                 jersey_number = player['jersey_number']
                 position = POSITION_CODES[player['position']['name']]
                 home = True if index == 0 else False
-
 
                 self.draw_player(jersey_number, position, home, pitch, ax)
 
