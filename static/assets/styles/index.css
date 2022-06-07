@@ -136,3 +136,18 @@ table tr:nth-child(odd){
 path{
     transition: .4s ease;
 }
+
+#shots-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+}
+#shots-container #shots-text{
+    width: 30%;
+    font-size: 25px;
+    text-align: center;
+}
+#shots-container svg{
+    width: 35%;
+}

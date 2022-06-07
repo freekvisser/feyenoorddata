@@ -36,14 +36,15 @@ def matches():
 @app.route('/match')
 def match():
     match_id = request.args.get('match')
+    match = Match(match_id)
 
-    m = Match(match_id)
-    match_data = m.getLineup()
-    fig, ax = m.drawLineup()
-    img_data = m.render_img(fig)
+    match_data = match.getLineup()
 
+    lineup = match.drawLineup()
+    home_shots = match.drawShots(True)
+    away_shots = match.drawShots(False)
 
-    return render_template('match.html', matchData=match_data.values, plot=img_data)
+    return render_template('match.html', matchData=match_data.values, lineup=lineup, home_shots=home_shots, away_shots=away_shots)
 
 
 @app.route('/test')

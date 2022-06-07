@@ -36,9 +36,7 @@
                         {% endfor %}
                     </tr>
                 </table>
-
-
-            {{plot}}
+                {{lineup}}
                 <table class="line-up-text" id="away">
                     <tr>
                         {% for player in matchData[1]['lineup'] %}
@@ -49,6 +47,12 @@
                         {% endfor %}
                     </tr>
                 </table>
+        </div>
+
+        <div id="shots-container">
+            {{home_shots}}
+            <div id="shots-text">Insert stats here</div>
+            {{away_shots}}
         </div>
 
 <script>
