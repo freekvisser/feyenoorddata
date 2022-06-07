@@ -144,10 +144,21 @@ path{
     align-items: center;
 }
 #shots-container #shots-text{
-    width: 30%;
-    font-size: 25px;
+    width: 40%;
+    font-size: 20px;
     text-align: center;
 }
+
+#shots-container #shots-text #left{
+    width: 40%;
+}
+#shots-container #shots-text #right{
+    width: 40%;
+}
+#shots-container #shots-text #center{
+    width: 20%;
+}
+
 #shots-container svg{
-    width: 35%;
+    width: 30%;
 }

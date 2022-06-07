@@ -15,11 +15,6 @@ SHOT = {
     "name": "Shot"
 }
 
-AWAY_TEAM = {
-    "id": 24,
-    "name": "Liverpool"
-}
-
 
 def render_img(fig):
     buf = io.StringIO()
@@ -56,13 +51,15 @@ class Match:
     def drawShots(self, side):
         sides = self.getHomeAndAway()
         team = sides[0] if side else sides[1]
+        teamName = team['name']
 
         shots = Shots(self.getShots(team))
 
         fig, ax = shots.drawPitch()
 
+        statisticsData = shots.getStatistics()
 
+        statisticsData['name'] = teamName
+        statisticsData['plot'] = render_img(fig)
 
-
-        return render_img(fig)
-
+        return statisticsData

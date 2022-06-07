@@ -43,8 +43,12 @@ def match():
     lineup = match.drawLineup()
     home_shots = match.drawShots(True)
     away_shots = match.drawShots(False)
+    home_plot = home_shots['plot']
+    away_plot = away_shots['plot']
 
-    return render_template('match.html', matchData=match_data.values, lineup=lineup, home_shots=home_shots, away_shots=away_shots)
+    statistics = {'home': home_shots, 'away': away_shots}
+
+    return render_template('match.html', matchData=match_data.values, lineup=lineup, home_plot=home_plot, away_plot=away_plot, statistics=statistics)
 
 
 @app.route('/test')

@@ -6,27 +6,8 @@
 </head>
 
 <body>
-<!--
-        {% for team in matchData %}
-            <table>
-                <tr>
-                    <th>{{team['formation']}}</th>
-                </tr>
-            {% for lineUp in team['lineup'] %}
-                <tr>
-
-                    {% for key, value in lineUp.items() %}
-                        <td>{{value}}</td>
-                    {% endfor %}
-
-                </tr>
-            {% endfor %}
-            </table>
-        <br><br>
-        {% endfor %}
--->
         <div id="line-up-container">
-            <table class="line-up-text" id="home" cellspacing="0">
+            <table class="line-up-text" id="home">
                     <tr>
                         {% for player in matchData[0]['lineup'] %}
                             <tr id={{loop.index}}>
@@ -50,9 +31,35 @@
         </div>
 
         <div id="shots-container">
-            {{home_shots}}
-            <div id="shots-text">Insert stats here</div>
-            {{away_shots}}
+            {{home_plot}}
+            <table id="shots-text">
+                <tr>
+                    <td id="left">{{statistics['home']['name']}}</td>
+                    <td id="center">{{statistics['home']['goals']}} - {{statistics['away']['goals']}}</td>
+                    <td id="right">{{statistics['away']['name']}}</td>
+                </tr>
+                <tr>
+                    <td id="left">{{statistics['home']['xG']}}</td>
+                    <td id="center">Expected goals</td>
+                    <td id="right">{{statistics['away']['xG']}}</td>
+                </tr>
+                <tr>
+                    <td id="left">{{statistics['home']['attempts']['total']}}</td>
+                    <td id="center">Total attempts</td>
+                    <td id="right">{{statistics['away']['attempts']['total']}}</td>
+                </tr>
+                <tr>
+                    <td id="left">{{statistics['home']['attempts']['on_target']}}</td>
+                    <td id="center">On target</td>
+                    <td id="right">{{statistics['away']['attempts']['on_target']}}</td>
+                </tr>
+                <tr>
+                    <td id="left">{{statistics['home']['attempts']['blocked']}}</td>
+                    <td id="center">Blocked</td>
+                    <td id="right">{{statistics['away']['attempts']['blocked']}}</td>
+                </tr>
+            </table>
+            {{away_plot}}
         </div>
 
 <script>
