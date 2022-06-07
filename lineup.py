@@ -6,12 +6,22 @@ import io
 from io import BytesIO
 from mplsoccer.pitch import Pitch
 from matplotlib.backends.backend_svg import FigureCanvasSVG
+from matplotlib import font_manager
+
+font_dirs = ['static/assets/fonts/ampero/ttf']
+font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+
+for font_file in font_files:
+    font_manager.fontManager.addfont(font_file)
+
+
+
 
 PITCH_LENGTH = 105
 PITCH_WIDTH = 69
 
 PITCH_CORRECTIONS = {
-            'x': 0,
+            'x': -0,
             'y': 3
         }
 
@@ -22,31 +32,31 @@ LINE_HEIGHTS = {
     },
     'defense': {
         'home': 12,
-        'away': PITCH_LENGTH - 12
+        'away': PITCH_LENGTH - 12 - PITCH_CORRECTIONS['x']
     },
     'full-back': {
         'home': 15,
-        'away': PITCH_LENGTH - 15
+        'away': PITCH_LENGTH - 15 - PITCH_CORRECTIONS['x']
     },
     'defensive_midfield': {
         'home': 22,
-        'away': PITCH_LENGTH - 22
+        'away': PITCH_LENGTH - 22 - PITCH_CORRECTIONS['x']
     },
     'midfield': {
         'home': 29,
-        'away': PITCH_LENGTH - 29
+        'away': PITCH_LENGTH - 29 - PITCH_CORRECTIONS['x']
     },
     'attacking_midfield': {
         'home': 36,
-        'away': PITCH_LENGTH - 36
+        'away': PITCH_LENGTH - 36 - PITCH_CORRECTIONS['x']
     },
     'wing': {
         'home': 41,
-        'away': PITCH_LENGTH - 41
+        'away': PITCH_LENGTH - 41 - PITCH_CORRECTIONS['x']
     },
     'attack': {
         'home': 47,
-        'away': PITCH_LENGTH - 47
+        'away': PITCH_LENGTH - 47 - PITCH_CORRECTIONS['x']
     }
 }
 
@@ -118,6 +128,8 @@ class Lineup:
                       pitch_width=PITCH_WIDTH)
         fig, ax = pitch.draw()
 
+
+
         self.drawFormation(pitch, ax)
 
         return fig, ax
@@ -165,14 +177,16 @@ class Lineup:
             kit_color = 'red'
             side = 'away'
 
-        font_size = 12
+        font_size = 13
 
-        padding = 0.5 if number < 10 else 0.4
+        padding = 0.5 if number < 10 else 0.45
 
         pitch.annotate(number, self.getPosition(position, side),
                        color='white',
                        bbox=dict(fc=kit_color, alpha=0.7, boxstyle='circle', pad=padding),
                        ha='center',
+                       fontname='Ampero',
+
                        fontsize=font_size, ax=ax)
 
     def drawFormation(self, pitch, ax):
