@@ -127,9 +127,12 @@ table tr:nth-child(odd){
 }
 .highlight{
     fill: #62b223 !important;
+    stroke: #fff !important;
+    stroke-width: 2px;
+    box-shadow: 5px 10px aliceblue;
     opacity: 1;
-    transition: .2s;
+    transition: .4s ease;
 }
 path{
-    transition: .2s;
+    transition: .4s ease;
 }

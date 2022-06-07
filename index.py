@@ -37,9 +37,9 @@ def matches():
 def match():
     match_id = request.args.get('match')
 
-    m = Match()
-    match_data = m.getData(match_id)
-    fig, ax = m.drawPitch()
+    m = Match(match_id)
+    match_data = m.getLineup()
+    fig, ax = m.drawLineup()
     img_data = m.render_img(fig)
 
 
