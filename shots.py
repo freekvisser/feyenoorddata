@@ -10,6 +10,7 @@ class Shots:
         fig, ax = pitch.draw()
 
         shots = []
+        onTarget = []
         goals = []
 
         for index, row in data.iterrows():
@@ -21,14 +22,23 @@ class Shots:
                 'location': location
             }
 
-            goals.append(data) if shot['outcome']['name'] == 'Goal' else shots.append(data)
+            if shot['outcome']['name'] == 'Goal':
+                goals.append(data)
+            elif shot['outcome']['name'] == 'Saved':
+                onTarget.append(data)
+            else:
+                shots.append(data)
 
         for shot in shots:
             pitch.scatter(shot['location'][0], shot['location'][1], s=(shot['xG'] * 900) + 100, marker='^',
                           edgecolors='black', c='#ff0000', alpha=0.7, ax=ax)
 
-        for goal in goals:
-            pitch.scatter(goal['location'][0], goal['location'][1], s=(goal['xG'] * 900) + 100, marker='h',
+        for shot in onTarget:
+            pitch.scatter(shot['location'][0], shot['location'][1], s=(shot['xG'] * 900) + 100, marker='s',
+                          edgecolors='black', c='#0000FF', alpha=0.7, ax=ax)
+
+        for shot in goals:
+            pitch.scatter(shot['location'][0], shot['location'][1], s=(shot['xG'] * 900) + 100, marker='h',
                           edgecolors='black', c='#00FF00', alpha=0.7, ax=ax)
 
         return fig, ax

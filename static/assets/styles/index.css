@@ -133,6 +133,13 @@ table tr:nth-child(odd){
     opacity: 1;
     transition: .4s ease;
 }
+.none{
+    opacity: 0;
+    transition: .4s ease;
+}
+g{
+    transition: .4s ease;
+}
 path{
     transition: .4s ease;
 }
@@ -159,6 +166,9 @@ path{
     width: 20%;
 }
 
-#shots-container svg{
+#shots-container .shots-plot{
     width: 30%;
+}
+#shots-container svg{
+    width: 100%;
 }

@@ -11,8 +11,8 @@
                     <tr>
                         {% for player in matchData[0]['lineup'] %}
                             <tr id={{loop.index}}>
-                                <td onmouseover="selectPosition({{loop.index}})" onmouseleave="deselectPosition({{loop.index}})">{{player['player']['name']}}</td>
-                                <td onmouseover="selectPosition({{loop.index}})" onmouseleave="deselectPosition({{loop.index}})">{{player['jersey_number']}}</td>
+                                <td onmouseover="togglePosition({{loop.index}})" onmouseleave="togglePosition({{loop.index}})">{{player['player']['name']}}</td>
+                                <td onmouseover="togglePosition({{loop.index}})" onmouseleave="togglePosition({{loop.index}})">{{player['jersey_number']}}</td>
                             </tr>
                         {% endfor %}
                     </tr>
@@ -22,8 +22,8 @@
                     <tr>
                         {% for player in matchData[1]['lineup'] %}
                             <tr>
-                                <td onmouseover="selectPosition({{loop.index + 11}})" onmouseleave="deselectPosition({{loop.index + 11}})">{{player['jersey_number']}}</td>
-                                <td onmouseover="selectPosition({{loop.index + 11}})" onmouseleave="deselectPosition({{loop.index + 11}})">{{player['player']['name']}}</td>
+                                <td onmouseover="togglePosition({{loop.index + 11}})" onmouseleave="togglePosition({{loop.index + 11}})">{{player['jersey_number']}}</td>
+                                <td onmouseover="togglePosition({{loop.index + 11}})" onmouseleave="togglePosition({{loop.index + 11}})">{{player['player']['name']}}</td>
                             </tr>
                         {% endfor %}
                     </tr>
@@ -31,7 +31,9 @@
         </div>
 
         <div id="shots-container">
-            {{home_plot}}
+            <div class="shots-plot" id="home-plot">
+                {{home_plot}}
+            </div>
             <table id="shots-text">
                 <tr>
                     <td id="left">{{statistics['home']['name']}}</td>
@@ -49,9 +51,9 @@
                     <td id="right">{{statistics['away']['attempts']['total']}}</td>
                 </tr>
                 <tr>
-                    <td id="left">{{statistics['home']['attempts']['on_target']}}</td>
-                    <td id="center">On target</td>
-                    <td id="right">{{statistics['away']['attempts']['on_target']}}</td>
+                    <td id="left" onmouseenter="toggleOnTarget({{statistics['home']['attempts']['total']}}, {{statistics['home']['attempts']['on_target']}}, 'home')", onmouseleave="toggleOnTarget({{statistics['home']['attempts']['total']}}, {{statistics['home']['attempts']['on_target']}}, 'home')">{{statistics['home']['attempts']['on_target']}}</td>
+                    <td id="center" onmouseenter="toggleOnTarget({{statistics['home']['attempts']['total']}}, {{statistics['home']['attempts']['on_target']}}, 'both')", onmouseleave="toggleOnTarget({{statistics['home']['attempts']['total']}}, {{statistics['home']['attempts']['on_target']}}, 'both')">On target</td>
+                    <td id="right" onmouseenter="toggleOnTarget({{statistics['away']['attempts']['total']}}, {{statistics['away']['attempts']['on_target']}}, 'away')", onmouseleave="toggleOnTarget({{statistics['away']['attempts']['total']}}, {{statistics['away']['attempts']['on_target']}}, 'away')">{{statistics['away']['attempts']['on_target']}}</td>
                 </tr>
                 <tr>
                     <td id="left">{{statistics['home']['attempts']['blocked']}}</td>
@@ -59,15 +61,28 @@
                     <td id="right">{{statistics['away']['attempts']['blocked']}}</td>
                 </tr>
             </table>
-            {{away_plot}}
+            <div class="shots-plot" id="away-plot">
+                {{away_plot}}
+            </div>
         </div>
 
 <script>
-                function selectPosition(index){
+                function togglePosition(index){
                    document.getElementById("text_" + index).firstElementChild.firstElementChild.classList.toggle('highlight');
                 }
-                function deselectPosition(index){
-                   document.getElementById("text_" + index).firstElementChild.firstElementChild.classList.toggle('highlight');
+
+                function toggleOnTarget(shots, onTarget, side){
+                    if(side === 'both'){
+                        toggleOnTarget({{statistics['home']['attempts']['total']}}, {{statistics['home']['attempts']['on_target']}}, 'home');
+                        toggleOnTarget({{statistics['away']['attempts']['total']}}, {{statistics['away']['attempts']['on_target']}}, 'away');
+                    }
+
+                    else{
+                        const plot = document.getElementById(side + '-plot');
+                        for(let i = 1; i <= shots - onTarget; i++){
+                           plot.querySelector("#PathCollection_" + i).classList.toggle('none');
+                        }
+                    }
                 }
             </script>
 
