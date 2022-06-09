@@ -1,3 +1,25 @@
+{% macro shots(event, eventName) -%}
+    <tr>
+        <td id="left" onmouseenter="toggleOnTarget('home', '{{event}}')", onmouseleave="toggleOnTarget()">{{statistics['home']['attempts'][event]}}</td>
+        <td id="center" onmouseenter="toggleOnTarget('both', '{{event}}')", onmouseleave="toggleOnTarget()">{{eventName}}</td>
+        <td id="right" onmouseenter="toggleOnTarget('away', '{{event}}')", onmouseleave="toggleOnTarget()">{{statistics['away']['attempts'][event]}}</td>
+    </tr>
+{%- endmacro %}
+
+{% macro lineup(side, lineup) -%}
+    <table class="line-up-text" id="{{side}}">
+        <tr>
+            {% for player in lineup %}
+                <tr id={{loop.index}}>
+                    <td onmouseover="togglePosition({{loop.index}})" onmouseleave="togglePosition({{loop.index}})">{{player['player']['name']}}</td>
+                    <td onmouseover="togglePosition({{loop.index}})" onmouseleave="togglePosition({{loop.index}})">{{player['jersey_number']}}</td>
+                </tr>
+            {% endfor %}
+        </tr>
+    </table>
+{%- endmacro %}
+
+
 <!DOCTYPE html>
 <html>
 
@@ -7,27 +29,9 @@
 
 <body>
         <div id="line-up-container">
-            <table class="line-up-text" id="home">
-                    <tr>
-                        {% for player in matchData[0]['lineup'] %}
-                            <tr id={{loop.index}}>
-                                <td onmouseover="togglePosition({{loop.index}})" onmouseleave="togglePosition({{loop.index}})">{{player['player']['name']}}</td>
-                                <td onmouseover="togglePosition({{loop.index}})" onmouseleave="togglePosition({{loop.index}})">{{player['jersey_number']}}</td>
-                            </tr>
-                        {% endfor %}
-                    </tr>
-                </table>
-                {{lineup}}
-                <table class="line-up-text" id="away">
-                    <tr>
-                        {% for player in matchData[1]['lineup'] %}
-                            <tr>
-                                <td onmouseover="togglePosition({{loop.index + 11}})" onmouseleave="togglePosition({{loop.index + 11}})">{{player['jersey_number']}}</td>
-                                <td onmouseover="togglePosition({{loop.index + 11}})" onmouseleave="togglePosition({{loop.index + 11}})">{{player['player']['name']}}</td>
-                            </tr>
-                        {% endfor %}
-                    </tr>
-                </table>
+            {{lineup('home', matchData[0]['lineup'])}}
+            {{lineupPlot}}
+            {{lineup('away', matchData[1]['lineup'])}}
         </div>
 
         <div id="shots-container">
@@ -50,21 +54,12 @@
                     <td id="center">Total attempts</td>
                     <td id="right">{{statistics['away']['attempts']['total']}}</td>
                 </tr>
-                <tr>
-                    <td id="left" onmouseenter="toggleOnTarget('home', 'on_target')", onmouseleave="toggleOnTarget()">{{statistics['home']['attempts']['on_target']}}</td>
-                    <td id="center" onmouseenter="toggleOnTarget('both', 'on_target')", onmouseleave="toggleOnTarget()">On target</td>
-                    <td id="right" onmouseenter="toggleOnTarget('away', 'on_target')", onmouseleave="toggleOnTarget()">{{statistics['away']['attempts']['on_target']}}</td>
-                </tr>
-                <tr>
-                    <td id="left" onmouseenter="toggleOnTarget('home', 'blocked')", onmouseleave="toggleOnTarget()">{{statistics['home']['attempts']['blocked']}}</td>
-                    <td id="center" onmouseenter="toggleOnTarget('both', 'blocked')", onmouseleave="toggleOnTarget()">Blocked</td>
-                    <td id="right" onmouseenter="toggleOnTarget('away', 'blocked')", onmouseleave="toggleOnTarget()">{{statistics['away']['attempts']['blocked']}}</td>
-                </tr>
-                <tr>
-                    <td id="left" onmouseenter="toggleOnTarget('home', 'off_target')", onmouseleave="toggleOnTarget()">{{statistics['home']['attempts']['off_target']}}</td>
-                    <td id="center" onmouseenter="toggleOnTarget('both', 'off_target')", onmouseleave="toggleOnTarget()">Off target</td>
-                    <td id="right" onmouseenter="toggleOnTarget('away', 'off_target')", onmouseleave="toggleOnTarget()">{{statistics['away']['attempts']['off_target']}}</td>
-                </tr>
+
+                {{shots('on_target', 'On target')}}
+
+                {{shots('blocked', 'Blocked')}}
+
+                {{shots('off_target', 'Off target')}}
             </table>
             <div class="shots-plot" id="away-plot">
                 {{away_plot}}
@@ -73,58 +68,56 @@
 
 <script>
 
-                const statistics = {
-                    'home': {
-                        'goals': {{statistics['home']['goals'] | safe}},
-                        'attempts': {{statistics['home']['attempts'] | safe}},
-                    },
-                    'away': {
-                        'goals': {{statistics['away']['goals'] | safe}},
-                        'attempts': {{statistics['away']['attempts'] | safe}},
-                    }
+    const statistics = {
+        'home': {
+            'goals': {{statistics['home']['goals'] | safe}},
+            'attempts': {{statistics['home']['attempts'] | safe}},
+        },
+        'away': {
+            'goals': {{statistics['away']['goals'] | safe}},
+            'attempts': {{statistics['away']['attempts'] | safe}},
+        }
+    }
+
+    function togglePosition(index){
+       document.getElementById("text_" + index).firstElementChild.firstElementChild.classList.toggle('highlight');
+    }
+
+    function toggleOnTarget(side = 'leave', event = null){
+        if(side === 'leave'){
+            paths = document.querySelectorAll('[id*="PathCollection_"]');
+            paths.forEach((path) => {
+                path.classList.remove('none');
+            })
+        }
+        else if(side === 'both'){
+            toggleOnTarget('home', event);
+            toggleOnTarget('away', event);
+        }
+        else{
+            const goals = statistics[side]['goals']
+            const shots = statistics[side]['attempts']['total'];
+            const onTarget = statistics[side]['attempts']['on_target'];
+            const blocked = statistics[side]['attempts']['blocked'];
+            const offTarget = statistics[side]['attempts']['off_target'];
+
+            const indices = {
+                'goal': [shots, shots - goals],
+                'on_target': [shots, shots - onTarget],
+                'blocked': [shots - onTarget, shots - onTarget - blocked],
+                'off_target': [shots - onTarget - blocked, shots - onTarget - blocked - offTarget]
+            }
+
+
+            const plot = document.getElementById(side + '-plot');
+            for(let i = 1; i <= shots; i++){
+                if(i <= indices[event][1] || i > indices[event][0]){
+                    plot.querySelector("#PathCollection_" + i).classList.toggle('none');
                 }
-
-                function togglePosition(index){
-                   document.getElementById("text_" + index).firstElementChild.firstElementChild.classList.toggle('highlight');
-                }
-
-                function toggleOnTarget(side = 'leave', event = null){
-                    if(side === 'leave'){
-                        paths = document.querySelectorAll('[id*="PathCollection_"]');
-                        paths.forEach((path) => {
-                            path.classList.remove('none');
-                        })
-                    }
-                    else if(side === 'both'){
-                        toggleOnTarget('home', event);
-                        toggleOnTarget('away', event);
-                    }
-                    else{
-                        const goals = statistics[side]['goals']
-                        const shots = statistics[side]['attempts']['total'];
-                        const onTarget = statistics[side]['attempts']['on_target'];
-                        const blocked = statistics[side]['attempts']['blocked'];
-                        const offTarget = statistics[side]['attempts']['off_target'];
-
-                        const indices = {
-                            'goal': [shots, shots - goals],
-                            'on_target': [shots, shots - onTarget],
-                            'blocked': [shots - onTarget, shots - onTarget - blocked],
-                            'off_target': [shots - onTarget - blocked, shots - onTarget - blocked - offTarget]
-                        }
-
-                        console.log(indices)
-
-
-                        const plot = document.getElementById(side + '-plot');
-                        for(let i = 1; i <= shots; i++){
-                            if(i <= indices[event][1] || i > indices[event][0]){
-                                plot.querySelector("#PathCollection_" + i).classList.toggle('none');
-                            }
-                        }
-                    }
-                }
-            </script>
+            }
+        }
+    }
+</script>
 
 </body>
 </html>

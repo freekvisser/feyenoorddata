@@ -48,7 +48,7 @@ def match():
 
     statistics = {'home': home_shots, 'away': away_shots}
 
-    return render_template('match.html', matchData=match_data.values, lineup=lineup, home_plot=home_plot, away_plot=away_plot, statistics=statistics)
+    return render_template('match.html', matchData=match_data.values, lineupPlot=lineup, home_plot=home_plot, away_plot=away_plot, statistics=statistics)
 
 
 @app.route('/test')
