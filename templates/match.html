@@ -60,6 +60,11 @@
                     <td id="center" onmouseenter="toggleOnTarget('both', 'blocked')", onmouseleave="toggleOnTarget()">Blocked</td>
                     <td id="right" onmouseenter="toggleOnTarget('away', 'blocked')", onmouseleave="toggleOnTarget()">{{statistics['away']['attempts']['blocked']}}</td>
                 </tr>
+                <tr>
+                    <td id="left" onmouseenter="toggleOnTarget('home', 'off_target')", onmouseleave="toggleOnTarget()">{{statistics['home']['attempts']['off_target']}}</td>
+                    <td id="center" onmouseenter="toggleOnTarget('both', 'off_target')", onmouseleave="toggleOnTarget()">Off target</td>
+                    <td id="right" onmouseenter="toggleOnTarget('away', 'off_target')", onmouseleave="toggleOnTarget()">{{statistics['away']['attempts']['off_target']}}</td>
+                </tr>
             </table>
             <div class="shots-plot" id="away-plot">
                 {{away_plot}}
@@ -99,12 +104,16 @@
                         const shots = statistics[side]['attempts']['total'];
                         const onTarget = statistics[side]['attempts']['on_target'];
                         const blocked = statistics[side]['attempts']['blocked'];
+                        const offTarget = statistics[side]['attempts']['off_target'];
 
                         const indices = {
                             'goal': [shots, shots - goals],
-                            'on_target': [shots - goals, shots - goals - onTarget],
-                            'blocked': [shots - goals - onTarget, shots - goals - onTarget - blocked]
+                            'on_target': [shots, shots - onTarget],
+                            'blocked': [shots - onTarget, shots - onTarget - blocked],
+                            'off_target': [shots - onTarget - blocked, shots - onTarget - blocked - offTarget]
                         }
+
+                        console.log(indices)
 
 
                         const plot = document.getElementById(side + '-plot');
