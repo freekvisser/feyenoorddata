@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Markup
 import json
 import pandas as pd
 import base64
@@ -36,13 +36,19 @@ def matches():
 @app.route('/match')
 def match():
     match_id = request.args.get('match')
+    match = Match(match_id)
 
-    m = Match()
-    match_data = m.getData(match_id)
-    fig, ax = m.drawPitch()
-    img_data = m.render_img(fig)
+    match_data = match.getLineup()
 
-    return render_template('match.html', matchData=match_data.values, plot=img_data)
+    lineup = match.drawLineup()
+    home_shots = match.drawShots(True)
+    away_shots = match.drawShots(False)
+    home_plot = home_shots['plot']
+    away_plot = away_shots['plot']
+
+    statistics = {'home': home_shots, 'away': away_shots}
+
+    return render_template('match.html', matchData=match_data.values, lineupPlot=lineup, home_plot=home_plot, away_plot=away_plot, statistics=statistics)
 
 
 @app.route('/test')

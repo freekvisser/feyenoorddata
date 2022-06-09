@@ -1,3 +1,26 @@
+{% macro lineup(side, lineup) -%}
+    <table class="line-up-text" id="{{side}}">
+        <tr>
+            {% for player in lineup %}
+                <tr id={{loop.index}}>
+                    <td onmouseover="togglePosition({{loop.index}})" onmouseleave="togglePosition({{loop.index}})">{{player['player']['name']}}</td>
+                    <td onmouseover="togglePosition({{loop.index}})" onmouseleave="togglePosition({{loop.index}})">{{player['jersey_number']}}</td>
+                </tr>
+            {% endfor %}
+        </tr>
+    </table>
+{%- endmacro %}
+
+{% macro shots_with_hover(event, eventName) -%}
+    <tr>
+        <td id="left" onmouseenter="toggleOnTarget('home', '{{event}}')", onmouseleave="toggleOnTarget()">{{statistics['home']['attempts'][event]}}</td>
+        <td id="center" onmouseenter="toggleOnTarget('both', '{{event}}')", onmouseleave="toggleOnTarget()">{{eventName}}</td>
+        <td id="right" onmouseenter="toggleOnTarget('away', '{{event}}')", onmouseleave="toggleOnTarget()">{{statistics['away']['attempts'][event]}}</td>
+    </tr>
+{%- endmacro %}
+
+
+
 <!DOCTYPE html>
 <html>
 
@@ -6,47 +29,96 @@
 </head>
 
 <body>
-<!--
-        {% for team in matchData %}
-            <table>
-                <tr>
-                    <th>{{team['formation']}}</th>
-                </tr>
-            {% for lineUp in team['lineup'] %}
-                <tr>
-
-                    {% for key, value in lineUp.items() %}
-                        <td>{{value}}</td>
-                    {% endfor %}
-
-                </tr>
-            {% endfor %}
-            </table>
-        <br><br>
-        {% endfor %}
--->
         <div id="line-up-container">
-            <table class="line-up-text" id="home">
-                    <tr>
-                        {% for player in matchData[0]['lineup'] %}
-                            <tr>
-                                <td>{{player['player']['name']}}</td>
-                                <td>{{player['jersey_number']}}</td>
-                            </tr>
-                        {% endfor %}
-                    </tr>
-                </table>
-            <img src='data:image/png;base64,{{plot}}'/>
-                <table class="line-up-text" id="away">
-                    <tr>
-                        {% for player in matchData[1]['lineup'] %}
-                            <tr>
-                                <td>{{player['jersey_number']}}</td>
-                                <td>{{player['player']['name']}}</td>
-                            </tr>
-                        {% endfor %}
-                    </tr>
-                </table>
+            {{lineup('home', matchData[0]['lineup'])}}
+            {{lineupPlot}}
+            {{lineup('away', matchData[1]['lineup'])}}
         </div>
+
+        <div id="shots-container">
+            <div class="shots-plot" id="home-plot">
+                {{home_plot}}
+            </div>
+            <table id="shots-text">
+                <tr>
+                    <td id="left">{{statistics['home']['name']}}</td>
+                    <td id="center">{{statistics['home']['goals']}} - {{statistics['away']['goals']}}</td>
+                    <td id="right">{{statistics['away']['name']}}</td>
+                </tr>
+                <tr>
+                    <td id="left">{{statistics['home']['xG']}}</td>
+                    <td id="center">Expected goals</td>
+                    <td id="right">{{statistics['away']['xG']}}</td>
+                </tr>
+                <tr>
+                    <td id="left">{{statistics['home']['attempts']['total']}}</td>
+                    <td id="center">Total attempts</td>
+                    <td id="right">{{statistics['away']['attempts']['total']}}</td>
+                </tr>
+
+                {{shots_with_hover('on_target', 'On target')}}
+
+                {{shots_with_hover('blocked', 'Blocked')}}
+
+                {{shots_with_hover('off_target', 'Off target')}}
+            </table>
+            <div class="shots-plot" id="away-plot">
+                {{away_plot}}
+            </div>
+        </div>
+
+<script>
+
+    const statistics = {
+        'home': {
+            'goals': {{statistics['home']['goals'] | safe}},
+            'attempts': {{statistics['home']['attempts'] | safe}},
+        },
+        'away': {
+            'goals': {{statistics['away']['goals'] | safe}},
+            'attempts': {{statistics['away']['attempts'] | safe}},
+        }
+    }
+
+    function togglePosition(index){
+       document.getElementById("text_" + index).firstElementChild.firstElementChild.classList.toggle('highlight');
+    }
+
+    function toggleOnTarget(side = 'leave', event = null){
+        if(side === 'leave'){
+            paths = document.querySelectorAll('[id*="PathCollection_"]');
+            paths.forEach((path) => {
+                path.classList.remove('none');
+            })
+        }
+        else if(side === 'both'){
+            toggleOnTarget('home', event);
+            toggleOnTarget('away', event);
+        }
+        else{
+            const goals = statistics[side]['goals']
+            const shots = statistics[side]['attempts']['total'];
+            const onTarget = statistics[side]['attempts']['on_target'];
+            const blocked = statistics[side]['attempts']['blocked'];
+            const offTarget = statistics[side]['attempts']['off_target'];
+
+            const indices = {
+                'goal': [shots, shots - goals],
+                'on_target': [shots, shots - onTarget],
+                'blocked': [shots - onTarget, shots - onTarget - blocked],
+                'off_target': [shots - onTarget - blocked, shots - onTarget - blocked - offTarget]
+            }
+
+
+            const plot = document.getElementById(side + '-plot');
+            for(let i = 1; i <= shots; i++){
+                if(i <= indices[event][1] || i > indices[event][0]){
+                    plot.querySelector("#PathCollection_" + i).classList.toggle('none');
+                }
+            }
+        }
+    }
+</script>
+
 </body>
 </html>

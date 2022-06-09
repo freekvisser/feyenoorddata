@@ -84,18 +84,24 @@ table{
 }
 table tr{
     cursor: pointer;
-    transition: .1s;
 }
-table tr:first-child{
-    cursor: auto;
+table tr{
+    cursor: default;
+    border: 1px solid transparent;
 }
 
-table tr:not(:first-child):hover{
+table tr:nth-child(n+4):hover{
     background-color: rgba(0, 0, 0, 0.4) !important;
     color: #fff;
 }
 table tr:nth-child(odd){
     background-color: rgba(0, 0, 0, 0.1);
+}
+#shots-container td:nth-child(even){
+    background-color: rgba(0, 0, 0, 0.1);
+}
+#shots-container tr:nth-child(n+4) td:hover{
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 
@@ -124,4 +130,51 @@ table tr:nth-child(odd){
 }
 #line-up-container img{
     width: 50%;
+}
+.highlight{
+    fill: #62b223 !important;
+    stroke: #fff !important;
+    stroke-width: 2px;
+    box-shadow: 5px 10px aliceblue;
+    opacity: 1;
+    transition: .4s ease;
+}
+.none{
+    opacity: 0;
+    transition: .4s ease;
+}
+g{
+    transition: .4s ease;
+}
+path{
+    transition: .4s ease;
+}
+
+#shots-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+}
+#shots-container #shots-text{
+    width: 40%;
+    font-size: 20px;
+    text-align: center;
+}
+
+#shots-container #shots-text #left{
+    width: 40%;
+}
+#shots-container #shots-text #right{
+    width: 40%;
+}
+#shots-container #shots-text #center{
+    width: 20%;
+}
+
+#shots-container .shots-plot{
+    width: 30%;
+}
+#shots-container svg{
+    width: 100%;
 }
