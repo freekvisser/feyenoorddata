@@ -1,11 +1,3 @@
-{% macro shots(event, eventName) -%}
-    <tr>
-        <td id="left" onmouseenter="toggleOnTarget('home', '{{event}}')", onmouseleave="toggleOnTarget()">{{statistics['home']['attempts'][event]}}</td>
-        <td id="center" onmouseenter="toggleOnTarget('both', '{{event}}')", onmouseleave="toggleOnTarget()">{{eventName}}</td>
-        <td id="right" onmouseenter="toggleOnTarget('away', '{{event}}')", onmouseleave="toggleOnTarget()">{{statistics['away']['attempts'][event]}}</td>
-    </tr>
-{%- endmacro %}
-
 {% macro lineup(side, lineup) -%}
     <table class="line-up-text" id="{{side}}">
         <tr>
@@ -18,6 +10,15 @@
         </tr>
     </table>
 {%- endmacro %}
+
+{% macro shots_with_hover(event, eventName) -%}
+    <tr>
+        <td id="left" onmouseenter="toggleOnTarget('home', '{{event}}')", onmouseleave="toggleOnTarget()">{{statistics['home']['attempts'][event]}}</td>
+        <td id="center" onmouseenter="toggleOnTarget('both', '{{event}}')", onmouseleave="toggleOnTarget()">{{eventName}}</td>
+        <td id="right" onmouseenter="toggleOnTarget('away', '{{event}}')", onmouseleave="toggleOnTarget()">{{statistics['away']['attempts'][event]}}</td>
+    </tr>
+{%- endmacro %}
+
 
 
 <!DOCTYPE html>
@@ -55,11 +56,11 @@
                     <td id="right">{{statistics['away']['attempts']['total']}}</td>
                 </tr>
 
-                {{shots('on_target', 'On target')}}
+                {{shots_with_hover('on_target', 'On target')}}
 
-                {{shots('blocked', 'Blocked')}}
+                {{shots_with_hover('blocked', 'Blocked')}}
 
-                {{shots('off_target', 'Off target')}}
+                {{shots_with_hover('off_target', 'Off target')}}
             </table>
             <div class="shots-plot" id="away-plot">
                 {{away_plot}}

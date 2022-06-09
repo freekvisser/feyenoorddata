@@ -85,11 +85,12 @@ table{
 table tr{
     cursor: pointer;
 }
-table tr:first-child{
-    cursor: auto;
+table tr{
+    cursor: default;
+    border: 1px solid transparent;
 }
 
-table tr:not(:first-child):hover{
+table tr:nth-child(n+4):hover{
     background-color: rgba(0, 0, 0, 0.4) !important;
     color: #fff;
 }
@@ -99,7 +100,7 @@ table tr:nth-child(odd){
 #shots-container td:nth-child(even){
     background-color: rgba(0, 0, 0, 0.1);
 }
-#shots-container tr:not(:first-child) td:hover{
+#shots-container tr:nth-child(n+4) td:hover{
     background-color: rgba(255, 255, 255, 0.5);
 }
 

@@ -6,7 +6,7 @@ class Shots:
 
     def drawPitch(self):
         data = self.d
-        pitch = VerticalPitch(half=True)
+        pitch = VerticalPitch(half=True, goal_type='box')
         fig, ax = pitch.draw()
 
         shots = []
