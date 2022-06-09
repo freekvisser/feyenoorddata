@@ -1,10 +1,21 @@
 {% macro lineup(side, lineup) -%}
     <table class="line-up-text" id="{{side}}">
         <tr>
-            {% for player in lineup %}
+            {% for player in matchData[0]['lineup'] %}
                 <tr id={{loop.index}}>
                     <td onmouseover="togglePosition({{loop.index}})" onmouseleave="togglePosition({{loop.index}})">{{player['player']['name']}}</td>
                     <td onmouseover="togglePosition({{loop.index}})" onmouseleave="togglePosition({{loop.index}})">{{player['jersey_number']}}</td>
+                </tr>
+            {% endfor %}
+        </tr>
+    </table>
+    {{lineupPlot}}
+    <table class="line-up-text" id="{{side}}">
+        <tr>
+            {% for player in matchData[1]['lineup'] %}
+                <tr id={{loop.index}}>
+                    <td onmouseover="togglePosition({{loop.index + 11}})" onmouseleave="togglePosition({{loop.index  + 11}})">{{player['player']['name']}}</td>
+                    <td onmouseover="togglePosition({{loop.index + 11}})" onmouseleave="togglePosition({{loop.index + 11}})">{{player['jersey_number']}}</td>
                 </tr>
             {% endfor %}
         </tr>
@@ -30,9 +41,7 @@
 
 <body>
         <div id="line-up-container">
-            {{lineup('home', matchData[0]['lineup'])}}
-            {{lineupPlot}}
-            {{lineup('away', matchData[1]['lineup'])}}
+            {{lineup()}}
         </div>
 
         <div id="shots-container">
@@ -58,6 +67,8 @@
 
                 {{shots_with_hover('on_target', 'On target')}}
 
+                {{shots_with_hover('post', 'Post')}}
+
                 {{shots_with_hover('blocked', 'Blocked')}}
 
                 {{shots_with_hover('off_target', 'Off target')}}
@@ -68,6 +79,11 @@
         </div>
 
 <script>
+
+            paths = document.querySelectorAll('[id*="Quiver_"]');
+            paths.forEach((path) => {
+                path.classList.add('none');
+            })
 
     const statistics = {
         'home': {
@@ -90,6 +106,10 @@
             paths.forEach((path) => {
                 path.classList.remove('none');
             })
+            paths = document.querySelectorAll('[id*="Quiver_"]');
+            paths.forEach((path) => {
+                path.classList.add('none');
+            })
         }
         else if(side === 'both'){
             toggleOnTarget('home', event);
@@ -99,13 +119,15 @@
             const goals = statistics[side]['goals']
             const shots = statistics[side]['attempts']['total'];
             const onTarget = statistics[side]['attempts']['on_target'];
+            const post = statistics[side]['attempts']['post']
             const blocked = statistics[side]['attempts']['blocked'];
             const offTarget = statistics[side]['attempts']['off_target'];
 
             const indices = {
                 'goal': [shots, shots - goals],
                 'on_target': [shots, shots - onTarget],
-                'blocked': [shots - onTarget, shots - onTarget - blocked],
+                'post': [shots - onTarget, shots - onTarget - post],
+                'blocked': [shots - onTarget - post, shots - onTarget - post - blocked],
                 'off_target': [shots - onTarget - blocked, shots - onTarget - blocked - offTarget]
             }
 
@@ -114,6 +136,9 @@
             for(let i = 1; i <= shots; i++){
                 if(i <= indices[event][1] || i > indices[event][0]){
                     plot.querySelector("#PathCollection_" + i).classList.toggle('none');
+                }
+                else{
+                    plot.querySelector("#Quiver_" + i).classList.toggle('none');
                 }
             }
         }
