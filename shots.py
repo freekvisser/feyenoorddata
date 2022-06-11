@@ -4,12 +4,33 @@ import pandas as pd
 
 
 
+SHOT = {
+    "id": 16,
+    "name": "Shot"
+}
+
+OWN_GOAL_FOR = {
+    "id" : 25,
+    "name" : "Own Goal For"
+}
+OWN_GOAL_AGAINST = {
+    "id" : 20,
+    "name" : "Own Goal Against"
+}
+
+
 class Shots:
     def __init__(self, data):
         self.d = data
+        self.shots = self.d[(self.d['type'] == SHOT)]
+        self.own_goals = {
+            'for': self.d[(self.d['type'] == OWN_GOAL_FOR)],
+            'against': self.d[(self.d['type'] == OWN_GOAL_AGAINST)]
+        }
+        print(self.own_goals)
 
     def drawPitch(self):
-        data = self.d
+        data = self.shots
         pitch = VerticalPitch(half=True, goal_type='box')
         fig, ax = pitch.draw()
 
@@ -85,10 +106,11 @@ class Shots:
         return fig, ax
 
     def getStatistics(self):
-        data = self.d
+        data = self.shots
+        own_goals_for = self.own_goals['for']
 
         xGs = 0
-        goals = 0
+        goals = own_goals_for.shape[0]
 
         attempts = {
             # get number of shots by getting number of rows
@@ -127,4 +149,5 @@ class Shots:
             'xG': round(xGs, 2),
             'goals': goals,
             'attempts': attempts,
+            'own_goals': self.own_goals['against'].shape[0],
         }

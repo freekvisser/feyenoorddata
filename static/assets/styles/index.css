@@ -90,12 +90,7 @@ table tr{
     border: 1px solid transparent;
 }
 
-#line-up-container table tr:hover{
-    background-color: rgba(0, 0, 0, 0.4) !important;
-    color: #fff;
-}
-
-#shots-container table tr:nth-child(n+4):hover{
+table tr:nth-child(n+5):hover{
     background-color: rgba(0, 0, 0, 0.4) !important;
     color: #fff;
 }
@@ -105,7 +100,7 @@ table tr:nth-child(odd){
 #shots-container td:nth-child(even){
     background-color: rgba(0, 0, 0, 0.1);
 }
-#shots-container tr:nth-child(n+4) td:hover{
+#shots-container tr:nth-child(n+5) td:hover{
     background-color: rgba(255, 255, 255, 0.5);
 }
 
@@ -182,14 +177,4 @@ path{
 }
 #shots-container svg{
     width: 100%;
-}
-
-#xG-container{
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-}
-.xG-plot{
-    height: auto !important;
-    width: 40% !important;
 }
