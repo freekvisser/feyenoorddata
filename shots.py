@@ -1,4 +1,8 @@
 from mplsoccer.pitch import VerticalPitch, Pitch
+from datetime import datetime,date
+import pandas as pd
+
+
 
 class Shots:
     def __init__(self, data):
@@ -15,6 +19,8 @@ class Shots:
         post = []
         onTarget = []
         goals = []
+
+        cronData = []
 
         for index, row in data.iterrows():
             shot = row['shot']
@@ -39,6 +45,8 @@ class Shots:
                 post.append(data)
             else:
                 shots.append(data)
+
+            cronData.append(data)
 
         for shot in shots:
             pitch.scatter(shot['location'][0], shot['location'][1], s=(shot['xG'] * 900) + 100, marker='^',
@@ -92,12 +100,25 @@ class Shots:
             'on_target': 0,
             'post': 0,
             'blocked': 0,
-            'off_target': 0
+            'off_target': 0,
+            'xG': []
         }
 
         for index, shot in data.iterrows():
             shotOutcome = shot['shot']['outcome']['name']
             xGs = xGs + shot['shot']['statsbomb_xg']
+            xGtimestamp = int(datetime.strftime(shot['timestamp'] + pd.DateOffset(minutes=1), "%M")
+                              if shot[
+                                'period'] == 1
+                              else datetime.strftime(
+                        shot['timestamp'] + pd.DateOffset(minutes=1), "%M")) + (45 if shot['period'] == 2 else 0)
+            xG = {
+                'rating': round(shot['shot']['statsbomb_xg'], 2),
+                'total': round(xGs, 2),
+                'outcome': shot['shot']['outcome']['name'],
+                'timestamp': xGtimestamp,
+            }
+            attempts['xG'].append(xG)
             if shotOutcome == 'Goal':
                 goals = goals + 1
                 attempts['on_target'] = attempts['on_target'] + 1

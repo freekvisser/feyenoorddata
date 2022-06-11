@@ -79,76 +79,17 @@
         </div>
 
         <div id="xG-container">
-            <canvas class="xG-plot" id="xG-plot-home"></canvas>
-            <canvas class="xG-plot" id="xG-plot-away"></canvas>
+            <div class="xG-plot">
+                <canvas id="xG-plot-home"></canvas>
+            </div>
+            <div class="xG-plot">
+                <canvas class="xG-plot" id="xG-plot-away"></canvas>
+            </div>
         </div>
 
 
 <script src="{{ url_for('static',filename='assets/node_modules/chart.js/dist/chart.js') }}"></script>
 <script>
-    const data = {
-      labels: [0, 10, 25, 30, 41, 50, 68, 90],
-      datasets: [{
-        label: 'My First Dataset',
-        data: [0.5, 0.8, 1, 1.4, 1.7, 2.4, 2.5, 2.5],
-        fill: false,
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1,
-        stepped: true,
-      }]
-    };
-    const myChart = new Chart("xG-plot-home", {
-        type: 'line',
-        data: data,
-        options: {
-            plugins: {
-                legend: {
-                    display: false,
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            return context['formattedValue'] + ', ' + context.label;
-                        },
-                        title: function () {
-                            return ''
-                        }
-                    },
-                    intersect: false,
-                    mode: 'point',
-                    displayColors: false,
-                }
-            },
-            scales: {
-                y: {
-                    display: true,
-                    stacked: true,
-                    ticks: {
-                        beginAtZero: 0,
-                        min: 0, // minimum value
-                        max: 90 // maximum value
-                    }
-                },
-                x: {
-                    type: 'linear',
-                    ticks: {
-                        stepSize: 10
-                    }
-                }
-            }
-        },
-        elements: {
-            line: {
-                tension: 0
-            }
-        }
-    });
-
-    paths = document.querySelectorAll('[id*="Quiver_"]');
-    paths.forEach((path) => {
-        path.classList.add('none');
-    })
-
     const statistics = {
         'home': {
             'goals': {{statistics['home']['goals'] | safe}},
@@ -159,6 +100,137 @@
             'attempts': {{statistics['away']['attempts'] | safe}},
         }
     };
+
+    xGplot();
+
+    function xGplot(){
+        const goals = statistics['home']['goals']
+        const shots = statistics['home']['attempts']['total'];
+        const onTarget = statistics['home']['attempts']['on_target'];
+        const post = statistics['home']['attempts']['post']
+        const blocked = statistics['home']['attempts']['blocked'];
+        const offTarget = statistics['home']['attempts']['off_target'];
+
+        const indices = {
+        'Goal': [shots, shots - goals],
+        'Saved': [shots, shots - onTarget],
+        'Post': [shots - onTarget, shots - onTarget - post],
+        'Blocked': [shots - onTarget - post, shots - onTarget - post - blocked],
+        'Off T': [shots - onTarget - blocked, shots - onTarget - blocked - offTarget]
+    }
+
+        const timestamps = [0];
+        const totals = [0];
+        const ratings = [0];
+        const index = [0]
+        let indexPerType = {
+            'Goal': 0,
+            'Saved': 0,
+            'Post': 0,
+            'Blocked': 0,
+            'Off T': 0,
+        }
+        const xGs = statistics['home']['attempts']['xG'];
+        console.log(indexPerType[xGs[0]['outcome']])
+        xGs.forEach(xG => {
+            timestamps.push(xG['timestamp'])
+            ratings.push(xG['rating'])
+            totals.push(xG['total'])
+            index.push(indexPerType[xG['outcome']])
+
+            indexPerType[xG['outcome']]++
+        })
+        const data = {
+          labels: timestamps,
+          datasets: [{
+            label: 'My First Dataset',
+            data: totals,
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            stepped: true,
+          }]
+        };
+
+        document.getElementById('xG-container').onmouseover = function(){
+            const plot = document.getElementById('home' + '-plot');
+                for(let i = 1; i <= shots; i++) {
+                    plot.querySelector("#Quiver_" + i).classList.add('none');
+                    plot.querySelector("#PathCollection_" + i).classList.remove('none');
+                }
+        };
+        const myChart = new Chart("xG-plot-home", {
+            type: 'line',
+            data: data,
+            options: {
+                onHover: function () {
+                    const plot = document.getElementById('home' + '-plot');
+                    for(let i = 1; i <= shots; i++) {
+                        //plot.querySelector("#PathCollection_" + i).classList.remove('none');
+                        //plot.querySelector("#Quiver_" + i).classList.add('none');
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const shotIndex = index[context['dataIndex']] + indices[xGs[context['dataIndex'] - 1]['outcome']][1] + 1;
+                                const plot = document.getElementById('home' + '-plot');
+                                for(let i = 1; i <= shots; i++){
+                                    plot.querySelector("#PathCollection_" + i).classList.remove('none');
+                                    plot.querySelector("#Quiver_" + i).classList.add('none');
+                                    if(i !== shotIndex){
+                                        plot.querySelector("#PathCollection_" + i).classList.toggle('none');
+                                    }
+                                    else{
+                                        plot.querySelector("#Quiver_" + i).classList.toggle('none');
+                                    }
+                                }
+                                return ratings[context['dataIndex']] + ', ' + context.label + '"';
+                            },
+                            title: function () {
+                                return ''
+                            }
+                        },
+                        intersect: false,
+                        mode: 'nearest',
+                        displayColors: false,
+                    }
+                },
+                scales: {
+                    y: {
+                        display: true,
+                        stacked: true,
+                        ticks: {
+                            beginAtZero: 0,
+                            min: 0, // minimum value
+                            max: 90 // maximum value
+                        }
+                    },
+                    x: {
+                        type: 'linear',
+                        ticks: {
+                            stepSize: 10,
+                            beginAtZero: 0,
+                            min: 0, // minimum value
+                        }
+                    }
+                }
+            },
+            elements: {
+                line: {
+                    tension: 0
+                }
+            }
+        });
+    }
+
+    paths = document.querySelectorAll('[id*="Quiver_"]');
+    paths.forEach((path) => {
+        path.classList.add('none');
+    })
 
     console.log(statistics);
 
@@ -182,6 +254,7 @@
             toggleOnTarget('away', event);
         }
         else{
+
             const goals = statistics[side]['goals']
             const shots = statistics[side]['attempts']['total'];
             const onTarget = statistics[side]['attempts']['on_target'];
@@ -196,7 +269,6 @@
                 'blocked': [shots - onTarget - post, shots - onTarget - post - blocked],
                 'off_target': [shots - onTarget - blocked, shots - onTarget - blocked - offTarget]
             }
-
 
             const plot = document.getElementById(side + '-plot');
             for(let i = 1; i <= shots; i++){
