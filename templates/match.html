@@ -1,10 +1,21 @@
 {% macro lineup(side, lineup) -%}
     <table class="line-up-text" id="{{side}}">
         <tr>
-            {% for player in lineup %}
+            {% for player in matchData[0]['lineup'] %}
                 <tr id={{loop.index}}>
                     <td onmouseover="togglePosition({{loop.index}})" onmouseleave="togglePosition({{loop.index}})">{{player['player']['name']}}</td>
                     <td onmouseover="togglePosition({{loop.index}})" onmouseleave="togglePosition({{loop.index}})">{{player['jersey_number']}}</td>
+                </tr>
+            {% endfor %}
+        </tr>
+    </table>
+    {{lineupPlot}}
+    <table class="line-up-text" id="{{side}}">
+        <tr>
+            {% for player in matchData[1]['lineup'] %}
+                <tr id={{loop.index}}>
+                    <td onmouseover="togglePosition({{loop.index + 11}})" onmouseleave="togglePosition({{loop.index  + 11}})">{{player['player']['name']}}</td>
+                    <td onmouseover="togglePosition({{loop.index + 11}})" onmouseleave="togglePosition({{loop.index + 11}})">{{player['jersey_number']}}</td>
                 </tr>
             {% endfor %}
         </tr>
@@ -30,9 +41,7 @@
 
 <body>
         <div id="line-up-container">
-            {{lineup('home', matchData[0]['lineup'])}}
-            {{lineupPlot}}
-            {{lineup('away', matchData[1]['lineup'])}}
+            {{lineup()}}
         </div>
 
         <div id="shots-container">
@@ -58,6 +67,8 @@
 
                 {{shots_with_hover('on_target', 'On target')}}
 
+                {{shots_with_hover('post', 'Post')}}
+
                 {{shots_with_hover('blocked', 'Blocked')}}
 
                 {{shots_with_hover('off_target', 'Off target')}}
@@ -67,8 +78,19 @@
             </div>
         </div>
 
-<script>
+        <div id="xG-container">
+            <div class="xG-plot">
+                <canvas onmouseout="resetShotsMap('home')" id="xG-plot-home"></canvasm>
+            </div>
+            <div class="xG-plot">
+                <canvas onmouseout="resetShotsMap('away')" id="xG-plot-away"></canvas>
+            </div>
+        </div>
 
+
+<script src="{{ url_for('static',filename='assets/node_modules/chart.js/dist/chart.js') }}"></script>
+<script>
+    const sides = ['home', 'away'];
     const statistics = {
         'home': {
             'goals': {{statistics['home']['goals'] | safe}},
@@ -78,7 +100,150 @@
             'goals': {{statistics['away']['goals'] | safe}},
             'attempts': {{statistics['away']['attempts'] | safe}},
         }
+    };
+
+    xGplot();
+
+    function xGplot() {
+        sides.forEach(side => {
+            const goals = statistics[side]['goals']
+            const shots = statistics[side]['attempts']['total'];
+            const onTarget = statistics[side]['attempts']['on_target'];
+            const post = statistics[side]['attempts']['post']
+            const blocked = statistics[side]['attempts']['blocked'];
+            const offTarget = statistics[side]['attempts']['off_target'];
+
+            const indices = {
+                'Goal': {
+                    'index': 0,
+                    'range': shots - goals
+                },
+                'Saved': {
+                    'index': 0,
+                    'range': shots - onTarget
+                },
+                'Post': {
+                    'index': 0,
+                    'range': shots - onTarget - post
+                },
+                'Blocked': {
+                    'index': 0,
+                    'range': shots - onTarget - post - blocked
+                },
+                'Off T': {
+                    'index': 0,
+                    'range': shots - onTarget - post - blocked - offTarget
+                }
+            }
+
+            const timestamps = [0];
+            const totals = [0];
+            const ratings = [0];
+            const index = [0]
+            const xGs = statistics[side]['attempts']['xG'];
+            xGs.forEach(xG => {
+                timestamps.push(xG['timestamp'])
+                ratings.push(xG['rating'])
+                totals.push(xG['total'])
+                if(xG['outcome'] === 'Wayward'){
+                    index.push(indices['Off T']['index'])
+                    indices['Off T']['index']++
+                }
+                else{
+                    index.push(indices[xG['outcome']]['index'])
+                    indices[xG['outcome']]['index']++
+                }
+            })
+            const data = {
+                labels: timestamps,
+                datasets: [{
+                    data: totals,
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    stepped: true,
+                }]
+            };
+
+            new Chart("xG-plot-" + side, {
+                type: 'line',
+                data: data,
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    let shotIndex;
+                                    if(xGs[context['dataIndex'] - 1]['outcome'] === "Wayward"){
+                                        shotIndex = index[context['dataIndex']] + indices['Off T']['range'] + 1;
+                                    }
+                                    else{
+                                        shotIndex = index[context['dataIndex']] + indices[xGs[context['dataIndex'] - 1]['outcome']]['range'] + 1;
+                                    }
+                                    const plot = document.getElementById(side + '-plot');
+                                    for (let i = 1; i <= shots; i++) {
+                                        plot.querySelector("#PathCollection_" + i).classList.remove('none');
+                                        plot.querySelector("#Quiver_" + i).classList.add('none');
+                                        if (i !== shotIndex) {
+                                            plot.querySelector("#PathCollection_" + i).classList.toggle('none');
+                                        } else {
+                                            plot.querySelector("#Quiver_" + i).classList.toggle('none');
+                                        }
+                                    }
+                                    return ratings[context['dataIndex']] + ', ' + context.label + '"';
+                                },
+                                title: function () {
+                                    return ''
+                                }
+                            },
+                            intersect: false,
+                            mode: 'nearest',
+                            displayColors: false,
+                        },
+                    },
+                    scales: {
+                        y: {
+                            display: true,
+                            stacked: true,
+                            ticks: {
+                                beginAtZero: 0,
+                                min: 0, // minimum value
+                                max: 90 // maximum value
+                            }
+                        },
+                        x: {
+                            type: 'linear',
+                            ticks: {
+                                stepSize: 10,
+                                beginAtZero: 0,
+                                min: 0, // minimum value
+                            }
+                        }
+                    }
+                },
+                elements: {
+                    line: {
+                        tension: 0
+                    }
+                }
+            });
+        })
     }
+
+    function resetShotsMap(side){
+        let plot = document.getElementById(side + '-plot');
+        for (let i = 1; i <= statistics[side]['attempts']['total']; i++) {
+            plot.querySelector("#Quiver_" + i).classList.add('none');
+            plot.querySelector("#PathCollection_" + i).classList.remove('none');
+        }
+    }
+
+    paths = document.querySelectorAll('[id*="Quiver_"]');
+    paths.forEach((path) => {
+        path.classList.add('none');
+    })
 
     function togglePosition(index){
        document.getElementById("text_" + index).firstElementChild.firstElementChild.classList.toggle('highlight');
@@ -90,30 +255,39 @@
             paths.forEach((path) => {
                 path.classList.remove('none');
             })
+            paths = document.querySelectorAll('[id*="Quiver_"]');
+            paths.forEach((path) => {
+                path.classList.add('none');
+            })
         }
         else if(side === 'both'){
             toggleOnTarget('home', event);
             toggleOnTarget('away', event);
         }
         else{
+
             const goals = statistics[side]['goals']
             const shots = statistics[side]['attempts']['total'];
             const onTarget = statistics[side]['attempts']['on_target'];
+            const post = statistics[side]['attempts']['post']
             const blocked = statistics[side]['attempts']['blocked'];
             const offTarget = statistics[side]['attempts']['off_target'];
 
             const indices = {
                 'goal': [shots, shots - goals],
                 'on_target': [shots, shots - onTarget],
-                'blocked': [shots - onTarget, shots - onTarget - blocked],
+                'post': [shots - onTarget, shots - onTarget - post],
+                'blocked': [shots - onTarget - post, shots - onTarget - post - blocked],
                 'off_target': [shots - onTarget - blocked, shots - onTarget - blocked - offTarget]
             }
-
 
             const plot = document.getElementById(side + '-plot');
             for(let i = 1; i <= shots; i++){
                 if(i <= indices[event][1] || i > indices[event][0]){
                     plot.querySelector("#PathCollection_" + i).classList.toggle('none');
+                }
+                else{
+                    plot.querySelector("#Quiver_" + i).classList.toggle('none');
                 }
             }
         }

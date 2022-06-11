@@ -90,7 +90,12 @@ table tr{
     border: 1px solid transparent;
 }
 
-table tr:nth-child(n+4):hover{
+#line-up-container table tr:hover{
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    color: #fff;
+}
+
+#shots-container table tr:nth-child(n+4):hover{
     background-color: rgba(0, 0, 0, 0.4) !important;
     color: #fff;
 }
@@ -177,4 +182,14 @@ path{
 }
 #shots-container svg{
     width: 100%;
+}
+
+#xG-container{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+.xG-plot{
+    height: auto !important;
+    width: 40% !important;
 }
