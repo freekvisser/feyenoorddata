@@ -80,10 +80,10 @@
 
         <div id="xG-container">
             <div class="xG-plot">
-                <canvas id="xG-plot-home"></canvas>
+                <canvas onmouseout="resetShotsMap('home')" id="xG-plot-home"></canvasm>
             </div>
             <div class="xG-plot">
-                <canvas id="xG-plot-away"></canvas>
+                <canvas onmouseout="resetShotsMap('away')" id="xG-plot-away"></canvas>
             </div>
         </div>
 
@@ -164,13 +164,6 @@
                 }]
             };
 
-            document.getElementById('xG-container').onmouseover = function () {
-                const plot = document.getElementById(side + '-plot');
-                for (let i = 1; i <= shots; i++) {
-                    plot.querySelector("#Quiver_" + i).classList.add('none');
-                    plot.querySelector("#PathCollection_" + i).classList.remove('none');
-                }
-            };
             new Chart("xG-plot-" + side, {
                 type: 'line',
                 data: data,
@@ -208,7 +201,7 @@
                             intersect: false,
                             mode: 'nearest',
                             displayColors: false,
-                        }
+                        },
                     },
                     scales: {
                         y: {
@@ -237,6 +230,14 @@
                 }
             });
         })
+    }
+
+    function resetShotsMap(side){
+        let plot = document.getElementById(side + '-plot');
+        for (let i = 1; i <= statistics[side]['attempts']['total']; i++) {
+            plot.querySelector("#Quiver_" + i).classList.add('none');
+            plot.querySelector("#PathCollection_" + i).classList.remove('none');
+        }
     }
 
     paths = document.querySelectorAll('[id*="Quiver_"]');
