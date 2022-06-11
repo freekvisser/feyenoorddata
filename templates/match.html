@@ -114,37 +114,49 @@
             const offTarget = statistics[side]['attempts']['off_target'];
 
             const indices = {
-                'Goal': [shots, shots - goals],
-                'Saved': [shots, shots - onTarget],
-                'Post': [shots - onTarget, shots - onTarget - post],
-                'Blocked': [shots - onTarget - post, shots - onTarget - post - blocked],
-                'Off T': [shots - onTarget - blocked, shots - onTarget - blocked - offTarget]
+                'Goal': {
+                    'index': 0,
+                    'range': shots - goals
+                },
+                'Saved': {
+                    'index': 0,
+                    'range': shots - onTarget
+                },
+                'Post': {
+                    'index': 0,
+                    'range': shots - onTarget - post
+                },
+                'Blocked': {
+                    'index': 0,
+                    'range': shots - onTarget - post - blocked
+                },
+                'Off T': {
+                    'index': 0,
+                    'range': shots - onTarget - post - blocked - offTarget
+                }
             }
 
             const timestamps = [0];
             const totals = [0];
             const ratings = [0];
             const index = [0]
-            let indexPerType = {
-                'Goal': 0,
-                'Saved': 0,
-                'Post': 0,
-                'Blocked': 0,
-                'Off T': 0,
-            }
             const xGs = statistics[side]['attempts']['xG'];
             xGs.forEach(xG => {
                 timestamps.push(xG['timestamp'])
                 ratings.push(xG['rating'])
                 totals.push(xG['total'])
-                index.push(indexPerType[xG['outcome']])
-
-                indexPerType[xG['outcome']]++
+                if(xG['outcome'] === 'Wayward'){
+                    index.push(indices['Off T']['index'])
+                    indices['Off T']['index']++
+                }
+                else{
+                    index.push(indices[xG['outcome']]['index'])
+                    indices[xG['outcome']]['index']++
+                }
             })
             const data = {
                 labels: timestamps,
                 datasets: [{
-                    label: 'My First Dataset',
                     data: totals,
                     fill: false,
                     borderColor: 'rgb(75, 192, 192)',
@@ -159,7 +171,7 @@
                     plot.querySelector("#PathCollection_" + i).classList.remove('none');
                 }
             };
-            const myChart = new Chart("xG-plot-" + side, {
+            new Chart("xG-plot-" + side, {
                 type: 'line',
                 data: data,
                 options: {
@@ -170,7 +182,13 @@
                         tooltip: {
                             callbacks: {
                                 label: function (context) {
-                                    const shotIndex = index[context['dataIndex']] + indices[xGs[context['dataIndex'] - 1]['outcome']][1] + 1;
+                                    let shotIndex;
+                                    if(xGs[context['dataIndex'] - 1]['outcome'] === "Wayward"){
+                                        shotIndex = index[context['dataIndex']] + indices['Off T']['range'] + 1;
+                                    }
+                                    else{
+                                        shotIndex = index[context['dataIndex']] + indices[xGs[context['dataIndex'] - 1]['outcome']]['range'] + 1;
+                                    }
                                     const plot = document.getElementById(side + '-plot');
                                     for (let i = 1; i <= shots; i++) {
                                         plot.querySelector("#PathCollection_" + i).classList.remove('none');

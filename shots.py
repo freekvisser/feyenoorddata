@@ -20,8 +20,6 @@ class Shots:
         onTarget = []
         goals = []
 
-        cronData = []
-
         for index, row in data.iterrows():
             shot = row['shot']
             xG = shot['statsbomb_xg']
@@ -45,8 +43,6 @@ class Shots:
                 post.append(data)
             else:
                 shots.append(data)
-
-            cronData.append(data)
 
         for shot in shots:
             pitch.scatter(shot['location'][0], shot['location'][1], s=(shot['xG'] * 900) + 100, marker='^',
@@ -107,11 +103,7 @@ class Shots:
         for index, shot in data.iterrows():
             shotOutcome = shot['shot']['outcome']['name']
             xGs = xGs + shot['shot']['statsbomb_xg']
-            xGtimestamp = int(datetime.strftime(shot['timestamp'] + pd.DateOffset(minutes=1), "%M")
-                              if shot[
-                                'period'] == 1
-                              else datetime.strftime(
-                        shot['timestamp'] + pd.DateOffset(minutes=1), "%M")) + (45 if shot['period'] == 2 else 0)
+            xGtimestamp = shot['minute']
             xG = {
                 'rating': round(shot['shot']['statsbomb_xg'], 2),
                 'total': round(xGs, 2),
