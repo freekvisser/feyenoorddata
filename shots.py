@@ -1,4 +1,8 @@
 from mplsoccer.pitch import VerticalPitch, Pitch
+from datetime import datetime,date
+import pandas as pd
+
+
 
 SHOT = {
     "id": 16,
@@ -114,12 +118,21 @@ class Shots:
             'on_target': 0,
             'post': 0,
             'blocked': 0,
-            'off_target': 0
+            'off_target': 0,
+            'xG': []
         }
 
         for index, shot in data.iterrows():
             shotOutcome = shot['shot']['outcome']['name']
             xGs = xGs + shot['shot']['statsbomb_xg']
+            xGtimestamp = shot['minute']
+            xG = {
+                'rating': round(shot['shot']['statsbomb_xg'], 2),
+                'total': round(xGs, 2),
+                'outcome': shot['shot']['outcome']['name'],
+                'timestamp': xGtimestamp,
+            }
+            attempts['xG'].append(xG)
             if shotOutcome == 'Goal':
                 goals = goals + 1
                 attempts['on_target'] = attempts['on_target'] + 1
