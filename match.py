@@ -15,6 +15,11 @@ SHOT = {
     "name": "Shot"
 }
 
+OWN_GOAL = {
+    "id" : 25,
+    "name" : "Own Goal For"
+}
+
 
 def render_img(fig):
     buf = io.StringIO()
@@ -39,7 +44,9 @@ class Match:
 
     def getShots(self, side):
         data = self.d[(self.d['type'] == SHOT) & (self.d['team'] == side)].dropna(axis=1, how='any')
-        return data
+        own_goals = self.d[(self.d['type'] == OWN_GOAL) & (self.d['team'] == side)].dropna(axis=1, how='any')
+
+        return pd.concat([data, own_goals])
 
     def drawLineup(self):
         lineup = Lineup(self.getLineup())
