@@ -15,9 +15,13 @@ SHOT = {
     "name": "Shot"
 }
 
-OWN_GOAL = {
+OWN_GOAL_FOR = {
     "id" : 25,
     "name" : "Own Goal For"
+}
+OWN_GOAL_AGAINST = {
+    "id" : 20,
+    "name" : "Own Goal Against"
 }
 
 
@@ -44,7 +48,7 @@ class Match:
 
     def getShots(self, side):
         data = self.d[(self.d['type'] == SHOT) & (self.d['team'] == side)].dropna(axis=1, how='any')
-        own_goals = self.d[(self.d['type'] == OWN_GOAL) & (self.d['team'] == side)].dropna(axis=1, how='any')
+        own_goals = pd.concat([self.d[(self.d['type'] == OWN_GOAL_FOR) & (self.d['team'] == side)].dropna(axis=1, how='any'), self.d[(self.d['type'] == OWN_GOAL_AGAINST) & (self.d['team'] == side)].dropna(axis=1, how='any')])
 
         return pd.concat([data, own_goals])
 

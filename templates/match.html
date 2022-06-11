@@ -64,6 +64,11 @@
                     <td id="center">Total attempts</td>
                     <td id="right">{{statistics['away']['attempts']['total']}}</td>
                 </tr>
+                <tr>
+                    <td id="left">{{statistics['home']['own_goals']}}</td>
+                    <td id="center">Own goals</td>
+                    <td id="right">{{statistics['away']['own_goals']}}</td>
+                </tr>
 
                 {{shots_with_hover('on_target', 'On target')}}
 
@@ -95,6 +100,8 @@
             'attempts': {{statistics['away']['attempts'] | safe}},
         }
     }
+
+    console.log(statistics)
 
     function togglePosition(index){
        document.getElementById("text_" + index).firstElementChild.firstElementChild.classList.toggle('highlight');
