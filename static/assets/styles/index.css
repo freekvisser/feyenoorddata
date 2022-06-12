@@ -94,7 +94,8 @@ table tr{
     background-color: rgba(0, 0, 0, 0.4) !important;
     color: #fff;
 }
-table tr:nth-child(n+5):hover{
+
+table tr:nth-child(n+4):hover{
     background-color: rgba(0, 0, 0, 0.4) !important;
     color: #fff;
 }
@@ -104,7 +105,7 @@ table tr:nth-child(odd){
 #shots-container td:nth-child(even){
     background-color: rgba(0, 0, 0, 0.1);
 }
-#shots-container tr:nth-child(n+5) td:hover{
+#shots-container tr:nth-child(n+4) td:hover{
     background-color: rgba(255, 255, 255, 0.5);
 }
 
@@ -152,6 +153,27 @@ g{
 }
 path{
     transition: .4s ease;
+}
+
+#general-statistics-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+}
+#general-statistics-container table{
+    width: 40%;
+    text-align: center;
+    font-size: 20px;
+}
+#general-statistics-container #left{
+    width: 40%;
+}
+#general-statistics-container #right{
+    width: 40%;
+}
+#general-statistics-container #center{
+    width: 20%;
 }
 
 #shots-container{

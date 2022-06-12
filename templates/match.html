@@ -24,9 +24,9 @@
 
 {% macro shots_with_hover(event, eventName) -%}
     <tr>
-        <td id="left" onmouseenter="toggleOnTarget('home', '{{event}}')", onmouseleave="toggleOnTarget()">{{statistics['home']['attempts'][event]}}</td>
+        <td id="left" onmouseenter="toggleOnTarget('home', '{{event}}')", onmouseleave="toggleOnTarget()">{{statistics['home']['shots']['attempts'][event]}}</td>
         <td id="center" onmouseenter="toggleOnTarget('both', '{{event}}')", onmouseleave="toggleOnTarget()">{{eventName}}</td>
-        <td id="right" onmouseenter="toggleOnTarget('away', '{{event}}')", onmouseleave="toggleOnTarget()">{{statistics['away']['attempts'][event]}}</td>
+        <td id="right" onmouseenter="toggleOnTarget('away', '{{event}}')", onmouseleave="toggleOnTarget()">{{statistics['away']['shots']['attempts'][event]}}</td>
     </tr>
 {%- endmacro %}
 
@@ -44,30 +44,41 @@
             {{lineup()}}
         </div>
 
+
+        <div id="general-statistics-container">
+            <table>
+                <tr>
+                    <td id="left">{{statistics['home']['shots']['name']}}</td>
+                    <td id="center">{{statistics['home']['shots']['goals']}} - {{statistics['away']['shots']['goals']}}</td>
+                    <td id="right">{{statistics['away']['shots']['name']}}</td>
+                </tr>
+                <tr>
+                    <td id="left">{{statistics['home']['possession']}}%</td>
+                    <td id="center">Possession</td>
+                    <td id="right">{{statistics['away']['possession']}}%</td>
+                </tr>
+            </table>
+        </div>
+
         <div id="shots-container">
             <div class="shots-plot" id="home-plot">
                 {{home_plot}}
             </div>
             <table id="shots-text">
                 <tr>
-                    <td id="left">{{statistics['home']['name']}}</td>
-                    <td id="center">{{statistics['home']['goals']}} - {{statistics['away']['goals']}}</td>
-                    <td id="right">{{statistics['away']['name']}}</td>
-                </tr>
-                <tr>
-                    <td id="left">{{statistics['home']['xG']}}</td>
+                    <td id="left">{{statistics['home']['shots']['xG']}}</td>
                     <td id="center">Expected goals</td>
-                    <td id="right">{{statistics['away']['xG']}}</td>
+                    <td id="right">{{statistics['away']['shots']['xG']}}</td>
                 </tr>
                 <tr>
-                    <td id="left">{{statistics['home']['attempts']['total']}}</td>
+                    <td id="left">{{statistics['home']['shots']['attempts']['total']}}</td>
                     <td id="center">Total attempts</td>
-                    <td id="right">{{statistics['away']['attempts']['total']}}</td>
+                    <td id="right">{{statistics['away']['shots']['attempts']['total']}}</td>
                 </tr>
                 <tr>
-                    <td id="left">{{statistics['home']['own_goals']}}</td>
+                    <td id="left">{{statistics['home']['shots']['own_goals']}}</td>
                     <td id="center">Own goals</td>
-                    <td id="right">{{statistics['away']['own_goals']}}</td>
+                    <td id="right">{{statistics['away']['shots']['own_goals']}}</td>
                 </tr>
 
                 {{shots_with_hover('on_target', 'On target')}}
@@ -96,12 +107,12 @@
     const sides = ['home', 'away'];
     const statistics = {
         'home': {
-            'goals': {{statistics['home']['goals'] | safe}},
-            'attempts': {{statistics['home']['attempts'] | safe}},
+            'goals': {{statistics['home']['shots']['goals'] | safe}},
+            'attempts': {{statistics['home']['shots']['attempts'] | safe}},
         },
         'away': {
-            'goals': {{statistics['away']['goals'] | safe}},
-            'attempts': {{statistics['away']['attempts'] | safe}},
+            'goals': {{statistics['away']['shots']['goals'] | safe}},
+            'attempts': {{statistics['away']['shots']['attempts'] | safe}},
         }
     };
 
