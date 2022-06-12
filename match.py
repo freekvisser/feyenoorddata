@@ -1,6 +1,8 @@
 from flask import Markup
 import pandas as pd
 import io
+import math
+
 
 from lineup import Lineup
 from shots import Shots
@@ -74,3 +76,19 @@ class Match:
         statisticsData['plot'] = render_img(fig)
 
         return statisticsData
+
+    def getPossession(self, side):
+        sides = self.getHomeAndAway()
+        team = sides[0] if side else sides[1]
+        possession = self.d[(self.d['team'] == team)]['duration'].values
+        totalSeconds = self.d['duration'].values
+        totalPossessionInSeconds = 0
+        possessionInSeconds = 0
+        for seconds in totalSeconds:
+            if not math.isnan(seconds):
+                totalPossessionInSeconds += seconds
+        for seconds in possession:
+            if not math.isnan(seconds):
+                possessionInSeconds += seconds
+
+        return round(possessionInSeconds / totalPossessionInSeconds * 100)

@@ -27,7 +27,6 @@ class Shots:
             'for': self.d[(self.d['type'] == OWN_GOAL_FOR)],
             'against': self.d[(self.d['type'] == OWN_GOAL_AGAINST)]
         }
-        print(self.own_goals)
 
     def drawPitch(self):
         data = self.shots

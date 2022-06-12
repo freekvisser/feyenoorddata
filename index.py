@@ -46,7 +46,19 @@ def match():
     home_plot = home_shots['plot']
     away_plot = away_shots['plot']
 
-    statistics = {'home': home_shots, 'away': away_shots}
+    home_possession = match.getPossession(True)
+    away_possession = match.getPossession(False)
+
+    statistics = {
+        'home': {
+            'shots': home_shots,
+            'possession': home_possession,
+        },
+        'away': {
+            'shots': away_shots,
+            'possession': away_possession
+        }
+    }
 
     return render_template('match.html', matchData=match_data.values, lineupPlot=lineup, home_plot=home_plot, away_plot=away_plot, statistics=statistics)
 
