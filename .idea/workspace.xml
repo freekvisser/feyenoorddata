@@ -7,11 +7,8 @@
     <list default="true" id="30b651f8-234b-4469-b689-2b13c930a39e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/index.py" afterDir="false" />
-<<<<<<< HEAD
-=======
       <change beforePath="$PROJECT_DIR$/match.py" beforeDir="false" afterPath="$PROJECT_DIR$/match.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shots.py" beforeDir="false" afterPath="$PROJECT_DIR$/shots.py" afterDir="false" />
->>>>>>> ed8feb6 (detach shots data and regular statistics. General data now includes possession data, closes #7)
       <change beforePath="$PROJECT_DIR$/static/assets/styles/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/assets/styles/index.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/match.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/match.html" afterDir="false" />
     </list>
@@ -34,6 +31,15 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/data/events/22912.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/data/events/3749522.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/index.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/match.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/shots.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/static/assets/styles/index.css" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/templates/match.html" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -42,18 +48,6 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-<<<<<<< HEAD
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/freekvisser/Documents/feyenoorddata",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
-  }
-}]]></component>
-=======
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
@@ -64,7 +58,6 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
 }</component>
->>>>>>> ed8feb6 (detach shots data and regular statistics. General data now includes possession data, closes #7)
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/static" />
@@ -79,7 +72,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="/usr/local/bin/python3.9" />
+      <option name="SDK_HOME" value="/usr/local/bin/python3.10" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -101,7 +94,7 @@
       <option name="targetType" value="PATH" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="/usr/local/bin/python3.9" />
+      <option name="SDK_HOME" value="/usr/local/bin/python3.10" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -110,6 +103,10 @@
       <option name="launchJavascriptDebuger" value="false" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Flask server.feyenoorddata" />
+      <item itemvalue="Python.index" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.index" />
@@ -128,11 +125,7 @@
       <workItem from="1654453664145" duration="2566000" />
       <workItem from="1654456312538" duration="45177000" />
       <workItem from="1654632072988" duration="39000" />
-<<<<<<< HEAD
-      <workItem from="1654632128753" duration="59121000" />
-=======
       <workItem from="1654632128753" duration="64946000" />
->>>>>>> ed8feb6 (detach shots data and regular statistics. General data now includes possession data, closes #7)
     </task>
     <servers />
   </component>
@@ -151,11 +144,7 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-<<<<<<< HEAD
-    <SUITE FILE_PATH="coverage/feyenoorddata$index.coverage" NAME="index Coverage Results" MODIFIED="1654969110136" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-=======
-    <SUITE FILE_PATH="coverage/feyenoorddata$index.coverage" NAME="index Coverage Results" MODIFIED="1655026354149" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
->>>>>>> ed8feb6 (detach shots data and regular statistics. General data now includes possession data, closes #7)
+    <SUITE FILE_PATH="coverage/feyenoorddata$index.coverage" NAME="index Coverage Results" MODIFIED="1663957992016" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/feyenoorddata$feyenoorddata.coverage" NAME="feyenoorddata Coverage Results" MODIFIED="1654456520736" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>
