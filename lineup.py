@@ -120,8 +120,10 @@ STARTINGXI = {
 
 class Lineup:
 
-    def __init__(self, data):
-        self.d = data
+    def __init__(self, lineup, substitutions):
+        self.d = lineup
+        self.s = substitutions
+
 
     def drawPitch(self):
         pitch = Pitch(pitch_color='grass', line_color='white', stripe=True, pitch_type='uefa', goal_type='box', pitch_length=PITCH_LENGTH,
@@ -168,14 +170,21 @@ class Lineup:
 
         return positions[position]
 
-    def draw_player(self, number, position, home, pitch, ax):
+    def draw_player(self, number, position, home, subbed, pitch, ax):
 
         if home:
             kit_color = 'blue'
             side = 'home'
+            arrow = 'larrow'
         else:
             kit_color = 'red'
             side = 'away'
+            arrow = 'rarrow'
+
+        if subbed:
+            boxStyle = arrow
+        else:
+            boxStyle = 'circle'
 
         font_size = 13
 
@@ -183,23 +192,38 @@ class Lineup:
 
         pitch.annotate(number, self.getPosition(position, side),
                        color='white',
-                       bbox=dict(fc=kit_color, alpha=0.7, boxstyle='circle', pad=padding),
+                       bbox=dict(fc=kit_color, alpha=0.7, boxstyle=boxStyle, pad=padding),
                        ha='center',
                        fontname='Ampero',
 
                        fontsize=font_size, ax=ax)
+
+    def getSubbedOffPlayers(self):
+        subbedOffPlayers = []
+        for index, shot in self.s.iterrows():
+            subbedOffPlayers.append(shot['player']['id'])
+        return subbedOffPlayers
 
     def drawFormation(self, pitch, ax):
 
         data = self.d
         index = 0
 
+        subbedOffPlayers = self.getSubbedOffPlayers()
+
+
+
         for team in data:
             for player in team['lineup']:
+                subbed = False
+                player_id = player['player']['id']
+                if player_id in subbedOffPlayers:
+                    subbed = True
+
                 jersey_number = player['jersey_number']
                 position = POSITION_CODES[player['position']['name']]
                 home = True if index == 0 else False
 
-                self.draw_player(jersey_number, position, home, pitch, ax)
+                self.draw_player(jersey_number, position, home, subbed, pitch, ax)
 
             index = index + 1

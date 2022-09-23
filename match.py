@@ -12,6 +12,11 @@ STARTINGXI = {
     "name": "Starting XI"
 }
 
+SUBSTITUTION = {
+    "id": 19,
+    "name": "Substitution"
+}
+
 SHOT = {
     "id": 16,
     "name": "Shot"
@@ -48,6 +53,10 @@ class Match:
         data = self.d['tactics'].where(self.d['type'] == STARTINGXI).dropna(axis=0, how='all')
         return data
 
+    def getSubstitutions(self):
+        data = self.d[(self.d['type'] == SUBSTITUTION)].dropna(axis=1, how='any')
+        return data
+
     def getShots(self, side):
         data = self.d[(self.d['type'] == SHOT) & (self.d['team'] == side)].dropna(axis=1, how='any')
         own_goals = pd.concat([self.d[(self.d['type'] == OWN_GOAL_FOR) & (self.d['team'] == side)].dropna(axis=1, how='any'), self.d[(self.d['type'] == OWN_GOAL_AGAINST) & (self.d['team'] == side)].dropna(axis=1, how='any')])
@@ -55,7 +64,7 @@ class Match:
         return pd.concat([data, own_goals])
 
     def drawLineup(self):
-        lineup = Lineup(self.getLineup())
+        lineup = Lineup(self.getLineup(), self.getSubstitutions())
 
         fig, ax = lineup.drawPitch()
 
