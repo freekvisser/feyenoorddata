@@ -46,6 +46,8 @@ def match():
     home_plot = home_shots['plot']
     away_plot = away_shots['plot']
 
+    substitutions = match.getSubstitutions()
+
     home_possession = match.getPossession(True)
     away_possession = match.getPossession(False)
 
@@ -60,7 +62,7 @@ def match():
         }
     }
 
-    return render_template('match.html', matchData=match_data.values, lineupPlot=lineup, home_plot=home_plot, away_plot=away_plot, statistics=statistics)
+    return render_template('match.html', matchData=match_data.values, lineupPlot=lineup, home_plot=home_plot, away_plot=away_plot, substitutions=substitutions, statistics=statistics)
 
 
 @app.route('/test')

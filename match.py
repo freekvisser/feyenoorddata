@@ -55,7 +55,24 @@ class Match:
 
     def getSubstitutions(self):
         data = self.d[(self.d['type'] == SUBSTITUTION)].dropna(axis=1, how='any')
-        return data
+
+        sides = self.getHomeAndAway()
+
+        substitutions = {
+            "home": [],
+            "away": []
+        }
+
+        for index, key in enumerate(substitutions):
+            side = data[(data['team'] == sides[index])].dropna(axis=1, how='any')
+            for neverUsedIndex, substitution in side.iterrows():
+                substitutions[key].append({
+                    "replacement": substitution['substitution']['replacement'],
+                    "replaced": substitution['player'],
+                    "minute": substitution['minute'] + 1,
+                })
+
+        return substitutions
 
     def getShots(self, side):
         data = self.d[(self.d['type'] == SHOT) & (self.d['team'] == side)].dropna(axis=1, how='any')

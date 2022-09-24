@@ -2,9 +2,22 @@
     <table class="line-up-text" id="{{side}}">
         <tr>
             {% for player in matchData[0]['lineup'] %}
-                <tr id={{loop.index}}>
+                <tr id={{player['player']['id']}} class={{loop.index}}>
                     <td onmouseover="togglePosition({{loop.index}})" onmouseleave="togglePosition({{loop.index}})">{{player['player']['name']}}</td>
                     <td onmouseover="togglePosition({{loop.index}})" onmouseleave="togglePosition({{loop.index}})">{{player['jersey_number']}}</td>
+                </tr>
+            {% endfor %}
+        </tr>
+        <tr class="substitutions">
+            <td>
+                Substitutions
+            </td>
+        </tr>
+        <tr>
+            {% for player in substitutions['home'] %}
+                <tr id={{loop.index}}>
+                    <td onmouseover="getIndexFromId({{player['replaced']['id']}})" onmouseleave="getIndexFromId({{player['replaced']['id']}})">{{player['replacement']['name']}}</td>
+                    <td onmouseover="getIndexFromId({{player['replaced']['id']}})" onmouseleave="getIndexFromId({{player['replaced']['id']}})">'{{player['minute']}}</td>
                 </tr>
             {% endfor %}
         </tr>
@@ -13,9 +26,22 @@
     <table class="line-up-text" id="{{side}}">
         <tr>
             {% for player in matchData[1]['lineup'] %}
-                <tr id={{loop.index}}>
+                <tr id={{player['player']['id']}} class={{loop.index + 11}}>
                     <td onmouseover="togglePosition({{loop.index + 11}})" onmouseleave="togglePosition({{loop.index  + 11}})">{{player['player']['name']}}</td>
                     <td onmouseover="togglePosition({{loop.index + 11}})" onmouseleave="togglePosition({{loop.index + 11}})">{{player['jersey_number']}}</td>
+                </tr>
+            {% endfor %}
+        </tr>
+        <tr class="substitutions">
+            <td>
+                Substitutions
+            </td>
+        </tr>
+        <tr>
+            {% for player in substitutions['away'] %}
+                <tr id={{loop.index}}>
+                    <td onmouseover="getIndexFromId({{player['replaced']['id']}})" onmouseleave="getIndexFromId({{player['replaced']['id']}})">{{player['replacement']['name']}}</td>
+                    <td onmouseover="getIndexFromId({{player['replaced']['id']}})" onmouseleave="getIndexFromId({{player['replaced']['id']}})">'{{player['minute']}}</td>
                 </tr>
             {% endfor %}
         </tr>
@@ -271,6 +297,13 @@
 
     function togglePosition(index){
        document.getElementById("text_" + index).firstElementChild.firstElementChild.classList.toggle('highlight');
+    }
+
+    function getIndexFromId(id){
+        const element = document.getElementById(id)
+        console.log(element.className)
+
+        togglePosition(element.className)
     }
 
     function toggleOnTarget(side = 'leave', event = null){

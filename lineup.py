@@ -122,7 +122,7 @@ class Lineup:
 
     def __init__(self, lineup, substitutions):
         self.d = lineup
-        self.s = substitutions
+        self.substitutions = substitutions
 
 
     def drawPitch(self):
@@ -198,10 +198,18 @@ class Lineup:
 
                        fontsize=font_size, ax=ax)
 
-    def getSubbedOffPlayers(self):
+    def getSubbedOffPlayers(self, side):
+        if side:
+            substitutions = self.substitutions['home']
+        else:
+            substitutions = self.substitutions['away']
+
         subbedOffPlayers = []
-        for index, shot in self.s.iterrows():
-            subbedOffPlayers.append(shot['player']['id'])
+
+        for substitution in substitutions:
+            subbedOffPlayers.append(substitution['replaced']['id'])
+
+
         return subbedOffPlayers
 
     def drawFormation(self, pitch, ax):
@@ -209,20 +217,20 @@ class Lineup:
         data = self.d
         index = 0
 
-        subbedOffPlayers = self.getSubbedOffPlayers()
-
-
 
         for team in data:
             for player in team['lineup']:
-                subbed = False
-                player_id = player['player']['id']
-                if player_id in subbedOffPlayers:
-                    subbed = True
 
                 jersey_number = player['jersey_number']
                 position = POSITION_CODES[player['position']['name']]
                 home = True if index == 0 else False
+
+                subbedOffPlayers = self.getSubbedOffPlayers(home)
+
+                subbed = False
+                player_id = player['player']['id']
+                if player_id in subbedOffPlayers:
+                    subbed = True
 
                 self.draw_player(jersey_number, position, home, subbed, pitch, ax)
 
